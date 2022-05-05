@@ -1,6 +1,6 @@
 <template>
     <div class="buy-list">
-        <h4>{{ msg }}</h4>
+        <h3>{{ msg }}</h3>
         <v-InputText type="text" v-model="value"/>
         <v-Button class="button" icon="pi pi-check" iconPos="center" @click="save()" />
 
@@ -38,10 +38,17 @@ export default {
 
 <style scoped>
 
-.button {
-  margin-left: 5px;
+.buy-list {
+    justify-content: center;
 }
+
+.button {
+    margin-left: 5px;
+    border: none;
+    background-color: rgb(62, 196, 62);
+}
+
 .items{
-  margin: 15px;
+    margin: 15px;
 }
 </style>
