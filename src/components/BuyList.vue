@@ -83,9 +83,7 @@
     >
       <div class="confirmation-content">
         <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem" />
-        <span
-          >Do you want to update the {{ product.name }}?</span
-        >
+        <span>Do you want to update the {{ product.name }}?</span>
       </div>
       <template #footer>
         <Button
@@ -103,33 +101,7 @@
       </template>
     </Dialog>
 
-    <h3>New Product</h3>
-
-    <InputText v-model.trim="name" placeholder="Product name" />
-    <InputNumber
-      @input="updateInputNumberVmodelQuantity"
-      v-model="quantity"
-      placeholder="Quantity"
-    />
-
-    <Button
-      class="button"
-      label="Add"
-      :disabled="!name || !quantity"
-      icon="pi pi-check"
-      @click="saveProduct"
-    />
-    <Button
-      class="p-button-danger"
-      label="Clear All"
-      :disabled="!products.length"
-      icon="pi pi-times"
-      @click="showConfirmDeleteDialogAll"
-    />
-
     <Toast />
-
-    <hr />
 
     <div>
       <DataTable
@@ -142,19 +114,46 @@
       >
         <template #empty> No products</template>
         <template #header>
-          <div class="flex" style="justify-content: flex-end">
-            <span class="p-input-icon-left">
-              <i class="pi pi-search" />
-              <InputText
-                v-model="filters['global'].value"
-                placeholder="Search..."
+          <div class="flex justify-content-between">
+            <div>
+              <h4>New Product</h4>
+              <InputText v-model.trim="name" placeholder="Product name" />
+              <InputNumber
+                @input="updateInputNumberVmodelQuantity"
+                v-model="quantity"
+                placeholder="Quantity"
+                style="margin-left: 0.313rem"
+              /><Button
+                class="button"
+                label="Add"
+                :disabled="!name || !quantity"
+                icon="pi pi-check"
+                @click="saveProduct"
               />
-            </span>
+              <Button
+                class="p-button-danger"
+                label="Clear All"
+                :disabled="!products.length"
+                icon="pi pi-times"
+                @click="showConfirmDeleteDialogAll"
+              />
+            </div>
+            <br />
+            <div>
+              <span class="p-input-icon-left">
+                <i class="pi pi-search" />
+                <InputText
+                  v-model="filters['global'].value"
+                  placeholder="Search..."
+                />
+              </span>
+            </div>
           </div>
         </template>
 
         <Column field="id" header="ID" :sortable="true" style="width: 30%">
           <template #body="{ data }"> {{ data.id }} </template>
+
           <template #filter="{ filterModel }">
             <InputNumber
               v-model="filterModel.value"
@@ -165,6 +164,7 @@
 
         <Column field="name" header="Name" :sortable="true" style="width: 30%">
           <template #body="{ data }"> {{ data.name }} </template>
+
           <template #filter="{ filterModel }">
             <InputText
               type="text"
@@ -197,6 +197,7 @@
               class="p-button-rounded p-button-success mr-2"
               @click="showUpdateProductDialog(data)"
             />
+
             <Button
               icon="pi pi-trash"
               class="p-button-rounded p-button-warning"
@@ -206,8 +207,6 @@
         </Column>
       </DataTable>
     </div>
-
-    <hr />
   </div>
 </template>
 
@@ -258,7 +257,9 @@ export default {
     },
     saveProduct() {
       if (this.checkDuplicateName(this.nameCapitalization(this.name))) {
-        this.product = this.findProductByName(this.nameCapitalization(this.name));
+        this.product = this.findProductByName(
+          this.nameCapitalization(this.name)
+        );
         this.showUpdateQuantityProductDialog();
       } else {
         this.product = {
@@ -279,9 +280,11 @@ export default {
           this.product.id
         )
       ) {
-        this.product = this.findProductByName(this.nameCapitalization(this.product.name))
+        this.product = this.findProductByName(
+          this.nameCapitalization(this.product.name)
+        );
         this.showUpdateQuantityProductDialog();
-        this.hideUpdateProductDialog()
+        this.hideUpdateProductDialog();
       } else {
         this.products.forEach((content) => {
           if (content.id === this.product.id) {
