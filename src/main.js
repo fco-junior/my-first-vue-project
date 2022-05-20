@@ -3,18 +3,31 @@ import App from './App.vue';
 
 import PrimeVue from 'primevue/config';
 import InputText from 'primevue/inputtext';
+import InputNumber from 'primevue/inputnumber';
 import Button from 'primevue/button';
-import Checkbox from 'primevue/checkbox';
+import DataTable from 'primevue/datatable';
+import Column from 'primevue/column';
+import Dialog from 'primevue/dialog';
+import ConfirmDialog from 'primevue/confirmdialog';
+import Toast from 'primevue/toast';
 
-import 'primevue/resources/themes/saga-blue/theme.css';       //theme
-import 'primevue/resources/primevue.min.css';                 //core css
-import 'primeicons/primeicons.css';                           //icons
+import 'primevue/resources/themes/saga-blue/theme.css';
+import 'primevue/resources/primevue.min.css';
+import 'primeicons/primeicons.css';
+
+import './assets/scss/_style.scss';
 
 const app = createApp(App);
 
 app.use(PrimeVue);
-app.component('v-InputText', InputText);
-app.component('v-Button', Button);
-app.component('v-Checkbox', Checkbox);
+
+app.component('InputText', InputText);
+app.component('InputNumber', InputNumber);
+app.component('Button', Button);
+app.component('DataTable', DataTable);
+app.component('Column', Column);
+app.component('Dialog', Dialog);
+app.component('ConfirmDialog', ConfirmDialog);
+app.component('Toast', Toast);
 
 app.mount('#app');
