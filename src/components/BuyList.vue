@@ -19,7 +19,7 @@
         class="p-button-danger"
         icon="pi pi-times"
         label="Cancel"
-        @click="closeDisplayUpdateProduct"
+        @click="hideUpdateProductDialog"
       />
     </Dialog>
 
@@ -38,7 +38,7 @@
           label="No"
           icon="pi pi-times"
           class="p-button-text"
-          @click="closeDisplayConfirmDeleteAll"
+          @click="hideConfirmDeleteAllDialog"
         />
         <Button
           label="Yes"
@@ -57,14 +57,14 @@
     >
       <div class="confirmation-content">
         <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem" />
-        <span>Are you sure you want to delete {{ product.name }}</span>
+        <span>Are you sure you want to delete {{ product.name }}?</span>
       </div>
       <template #footer>
         <Button
           label="No"
           icon="pi pi-times"
           class="p-button-text"
-          @click="closeDisplayConfirmDelete"
+          @click="hideConfirmDeleteDialog"
         />
         <Button
           label="Yes"
@@ -84,7 +84,7 @@
       <div class="confirmation-content">
         <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem" />
         <span
-          >Do you want to change the quantity of the {{ product.name }}</span
+          >Do you want to update the {{ product.name }}?</span
         >
       </div>
       <template #footer>
@@ -92,13 +92,13 @@
           label="No"
           icon="pi pi-times"
           class="p-button-text"
-          @click="closeDisplayUpdateQuantityProduct"
+          @click="hideUpdateProductQuantityDialog"
         />
         <Button
           label="Yes"
           icon="pi pi-check"
           class="p-button-text"
-          @click="openDisplayUpdateProduct(product)"
+          @click="showUpdateProductDialog(product)"
         />
       </template>
     </Dialog>
@@ -115,6 +115,7 @@
     <Button
       class="button"
       label="Add"
+      :disabled="!name || !quantity"
       icon="pi pi-check"
       @click="saveProduct"
     />
@@ -123,7 +124,7 @@
       label="Clear All"
       :disabled="!products.length"
       icon="pi pi-times"
-      @click="openDisplayConfirmDeleteAll"
+      @click="showConfirmDeleteDialogAll"
     />
 
     <Toast />
@@ -194,12 +195,12 @@
             <Button
               icon="pi pi-pencil"
               class="p-button-rounded p-button-success mr-2"
-              @click="openDisplayUpdateProduct(data)"
+              @click="showUpdateProductDialog(data)"
             />
             <Button
               icon="pi pi-trash"
               class="p-button-rounded p-button-warning"
-              @click="openDisplayConfirmDelete(data)"
+              @click="showConfirmDeleteDialog(data)"
             />
           </template>
         </Column>
@@ -256,11 +257,9 @@ export default {
       this.quantity = event.value;
     },
     saveProduct() {
-      if (!this.name || !this.quantity) {
-        alert("Product name cannot be empty and Minimum quantity 1!");
-      } else if (this.checkDuplicateName(this.nameCapitalization(this.name))) {
-        let product = this.findProductByName(this.name);
-        this.openDisplayUpdateQuantityProduct(product);
+      if (this.checkDuplicateName(this.nameCapitalization(this.name))) {
+        this.product = this.findProductByName(this.nameCapitalization(this.name));
+        this.showUpdateQuantityProductDialog();
       } else {
         this.product = {
           id: this.newProductId(),
@@ -270,42 +269,46 @@ export default {
         this.products.push({ ...this.product });
         this.name = "";
         this.quantity = null;
-        this.showSuccessAddProduct(this.product.name);
+        this.notification("success", `${this.product.name} added!`);
       }
     },
     updateProduct() {
-      if (!this.product.name || !this.product.quantity)
-        alert("Product name cannot be empty and Minimum quantity 1!");
-      else if (
+      if (
         this.checkDuplicateNameUpdate(
           this.nameCapitalization(this.product.name),
           this.product.id
         )
-      )
-        alert("Product name duplicate!");
-      else {
+      ) {
+        this.product = this.findProductByName(this.nameCapitalization(this.product.name))
+        this.showUpdateQuantityProductDialog();
+        this.hideUpdateProductDialog()
+      } else {
         this.products.forEach((content) => {
           if (content.id === this.product.id) {
             let index = this.products.indexOf(content);
             this.products[index] = this.product;
           }
         });
+        this.notification("success", `${this.product.name} updated!`);
         this.product = {};
-        this.closeDisplayUpdateProduct();
+        this.hideUpdateProductDialog();
       }
     },
     deleteProduct() {
       this.products.forEach((content) => {
         if (content.id === this.product.id) {
           let index = this.products.indexOf(content);
+          this.notification("success", `${this.product.name} deleted!`);
+
           this.products.splice(index, 1);
         }
       });
-      this.closeDisplayConfirmDelete();
+      this.hideConfirmDeleteDialog();
     },
     deleteAllProducts() {
       this.products = [];
-      this.closeDisplayConfirmDeleteAll();
+      this.hideConfirmDeleteAllDialog();
+      this.notification("success", "All products have been deleted");
     },
     newProductId() {
       let id = 1;
@@ -313,10 +316,10 @@ export default {
         if (this.products[index].id === id) id++;
       return id;
     },
-    findProductByName(nameProduct) {
-      let product;
+    findProductByName(name) {
+      let product = {};
       this.products.forEach((content) => {
-        if (content.name === nameProduct) product = content;
+        if (content.name === name) product = content;
       });
       return product;
     },
@@ -338,40 +341,38 @@ export default {
       });
       return flag;
     },
-    showSuccessAddProduct(productName) {
+    notification(severity, detail) {
       this.$toast.add({
-        severity: "success",
-        summary: "",
-        detail: productName + "added!",
+        severity,
+        detail,
         life: 3000,
       });
     },
-    openDisplayUpdateProduct(product) {
-      this.closeDisplayUpdateQuantityProduct();
+    showUpdateProductDialog(product) {
+      this.hideUpdateProductQuantityDialog();
       this.product = { ...product };
       this.displayUpdateProduct = true;
     },
-    closeDisplayUpdateProduct() {
+    hideUpdateProductDialog() {
       this.displayUpdateProduct = false;
     },
-    openDisplayConfirmDelete(product) {
+    showConfirmDeleteDialog(product) {
       this.product = { ...product };
       this.displayConfirmDeleteProduct = true;
     },
-    closeDisplayConfirmDelete() {
+    hideConfirmDeleteDialog() {
       this.displayConfirmDeleteProduct = false;
     },
-    openDisplayConfirmDeleteAll() {
+    showConfirmDeleteDialogAll() {
       this.displayConfirmDeleteAllProducts = true;
     },
-    closeDisplayConfirmDeleteAll() {
+    hideConfirmDeleteAllDialog() {
       this.displayConfirmDeleteAllProducts = false;
     },
-    openDisplayUpdateQuantityProduct(product) {
-      this.product = { ...product };
+    showUpdateQuantityProductDialog() {
       this.displayUpdateQuantityProduct = true;
     },
-    closeDisplayUpdateQuantityProduct() {
+    hideUpdateProductQuantityDialog() {
       this.name = "";
       this.quantity = null;
       this.displayUpdateQuantityProduct = false;

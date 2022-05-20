@@ -9,6 +9,7 @@ import DataTable from 'primevue/datatable';
 import Column from 'primevue/column';
 import Dialog from 'primevue/dialog';
 import ConfirmDialog from 'primevue/confirmdialog';
+import ToastService from 'primevue/toastservice';
 import Toast from 'primevue/toast';
 
 import 'primevue/resources/themes/saga-blue/theme.css';
@@ -20,6 +21,7 @@ import './assets/scss/_style.scss';
 const app = createApp(App);
 
 app.use(PrimeVue);
+app.use(ToastService);
 
 app.component('InputText', InputText);
 app.component('InputNumber', InputNumber);
