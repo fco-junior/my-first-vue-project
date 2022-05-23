@@ -15,6 +15,7 @@ import Toast from 'primevue/toast';
 import 'primevue/resources/themes/saga-blue/theme.css';
 import 'primevue/resources/primevue.min.css';
 import 'primeicons/primeicons.css';
+import 'primeflex/primeflex.css'
 
 import './assets/scss/_style.scss';
 
@@ -31,5 +32,6 @@ app.component('Column', Column);
 app.component('Dialog', Dialog);
 app.component('ConfirmDialog', ConfirmDialog);
 app.component('Toast', Toast);
+
 
 app.mount('#app');

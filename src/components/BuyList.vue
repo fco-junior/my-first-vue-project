@@ -8,7 +8,7 @@
     >
       <InputText class="input" type="text" v-model.trim="product.name" />
 
-      <InputNumber class="input"  v-model="product.quantity" :min="1" />
+      <InputNumber class="input" v-model="product.quantity" :min="1" />
 
       <template #footer>
         <Button
@@ -129,7 +129,11 @@
           <div class="flex justify-content-between">
             <div>
               <h4>New Product</h4>
-              <InputText class="input" v-model.trim="name" placeholder="Product name" />
+              <InputText
+                class="input"
+                v-model.trim="name"
+                placeholder="Product name"
+              />
 
               <InputNumber
                 @input="updateInputNumberVmodelQuantity"
@@ -155,8 +159,6 @@
               />
             </div>
 
-            <br />
-
             <div>
               <span class="p-input-icon-left">
                 <i class="pi pi-search" />
@@ -168,6 +170,8 @@
               </span>
             </div>
           </div>
+
+          <br />
         </template>
 
         <Column field="id" header="ID" :sortable="true" style="width: 30%">
