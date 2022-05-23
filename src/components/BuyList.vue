@@ -3,29 +3,34 @@
     <Dialog
       header="Update product"
       v-model:visible="displayUpdateProduct"
-      :style="{ width: '50vw' }"
+      :style="{ width: '28.125 rem' }"
       :modal="true"
     >
-      <InputText type="text" v-model.trim="product.name" />
-      <InputNumber v-model="product.quantity" :min="1" />
+      <InputText class="input" type="text" v-model.trim="product.name" />
 
-      <Button
-        class="button"
-        icon="pi pi-check"
-        label="Update"
-        @click="updateProduct"
-      />
-      <Button
-        class="p-button-danger"
-        icon="pi pi-times"
-        label="Cancel"
-        @click="hideUpdateProductDialog"
-      />
+      <InputNumber class="input"  v-model="product.quantity" :min="1" />
+
+      <template #footer>
+        <Button
+          class="p-button-rounded p-button-danger p-button-text"
+          icon="pi pi-times"
+          label="Cancel"
+          @click="hideUpdateProductDialog"
+        />
+
+        <Button
+          class="p-button-rounded p-button-text"
+          icon="pi pi-check"
+          label="Update"
+          :disabled="!product.name || !product.quantity"
+          @click="updateProduct"
+        />
+      </template>
     </Dialog>
 
     <Dialog
       v-model:visible="displayConfirmDeleteAllProducts"
-      :style="{ width: '450px' }"
+      :style="{ width: '28.125 rem' }"
       header="Confirm"
       :modal="true"
     >
@@ -33,17 +38,19 @@
         <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem" />
         <span>Are you sure you want to delete all products?</span>
       </div>
+
       <template #footer>
         <Button
           label="No"
           icon="pi pi-times"
-          class="p-button-text"
+          class="p-button-rounded p-button-danger p-button-text"
           @click="hideConfirmDeleteAllDialog"
         />
+
         <Button
           label="Yes"
           icon="pi pi-check"
-          class="p-button-text"
+          class="p-button-rounded p-button-success p-button-text"
           @click="deleteAllProducts"
         />
       </template>
@@ -51,7 +58,7 @@
 
     <Dialog
       v-model:visible="displayConfirmDeleteProduct"
-      :style="{ width: '450px' }"
+      :style="{ width: '28.125 rem' }"
       header="Confirm"
       :modal="true"
     >
@@ -59,17 +66,19 @@
         <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem" />
         <span>Are you sure you want to delete {{ product.name }}?</span>
       </div>
+
       <template #footer>
         <Button
           label="No"
           icon="pi pi-times"
-          class="p-button-text"
+          class="p-button-rounded p-button-danger p-button-text"
           @click="hideConfirmDeleteDialog"
         />
+
         <Button
           label="Yes"
           icon="pi pi-check"
-          class="p-button-text"
+          class="p-button-rounded p-button-success p-button-text"
           @click="deleteProduct(product)"
         />
       </template>
@@ -77,7 +86,7 @@
 
     <Dialog
       v-model:visible="displayUpdateQuantityProduct"
-      :style="{ width: '450px' }"
+      :style="{ width: '28.125 rem' }"
       header="The product already exists"
       :modal="true"
     >
@@ -85,6 +94,7 @@
         <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem" />
         <span>Do you want to update the {{ product.name }}?</span>
       </div>
+
       <template #footer>
         <Button
           label="No"
@@ -92,6 +102,7 @@
           class="p-button-text"
           @click="hideUpdateProductQuantityDialog"
         />
+
         <Button
           label="Yes"
           icon="pi pi-check"
@@ -113,35 +124,43 @@
         removableSort
       >
         <template #empty> No products</template>
+
         <template #header>
           <div class="flex justify-content-between">
             <div>
               <h4>New Product</h4>
-              <InputText v-model.trim="name" placeholder="Product name" />
+              <InputText class="input" v-model.trim="name" placeholder="Product name" />
+
               <InputNumber
                 @input="updateInputNumberVmodelQuantity"
+                class="input"
                 v-model="quantity"
                 placeholder="Quantity"
-                style="margin-left: 0.313rem"
-              /><Button
-                class="button"
+              />
+
+              <Button
+                class="p-button-rounded p-button-success"
                 label="Add"
                 :disabled="!name || !quantity"
                 icon="pi pi-check"
                 @click="saveProduct"
               />
+
               <Button
-                class="p-button-danger"
+                class="p-button-rounded p-button-danger"
                 label="Clear All"
                 :disabled="!products.length"
                 icon="pi pi-times"
                 @click="showConfirmDeleteDialogAll"
               />
             </div>
+
             <br />
+
             <div>
               <span class="p-input-icon-left">
                 <i class="pi pi-search" />
+
                 <InputText
                   v-model="filters['global'].value"
                   placeholder="Search..."
@@ -194,13 +213,13 @@
           <template #body="{ data }">
             <Button
               icon="pi pi-pencil"
-              class="p-button-rounded p-button-success mr-2"
+              class="p-button-rounded"
               @click="showUpdateProductDialog(data)"
             />
 
             <Button
               icon="pi pi-trash"
-              class="p-button-rounded p-button-warning"
+              class="p-button-rounded p-button-danger"
               @click="showConfirmDeleteDialog(data)"
             />
           </template>
@@ -302,7 +321,6 @@ export default {
         if (content.id === this.product.id) {
           let index = this.products.indexOf(content);
           this.notification("success", `${this.product.name} deleted!`);
-
           this.products.splice(index, 1);
         }
       });
