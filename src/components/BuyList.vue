@@ -6,9 +6,9 @@
       :style="{ width: '28.125 rem' }"
       :modal="true"
     >
-      <InputText class="input" type="text" v-model.trim="product.name" />
+      <InputText class="input" type="text" v-model.trim="productToEdit.name" />
 
-      <InputNumber class="input" v-model="product.quantity" :min="1" />
+      <InputNumber class="input" v-model="productToEdit.quantity" :min="1" />
 
       <template #footer>
         <Button
@@ -22,7 +22,7 @@
           class="p-button-rounded p-button-text"
           icon="pi pi-check"
           label="Update"
-          :disabled="!product.name || !product.quantity"
+          :disabled="!productToEdit.name || !productToEdit.quantity"
           @click="updateProduct"
         />
       </template>
@@ -31,12 +31,12 @@
     <Dialog
       v-model:visible="displayConfirmDeleteAllProducts"
       :style="{ width: '28.125 rem' }"
-      header="Confirm"
+      header="Confirm Clear All"
       :modal="true"
     >
       <div class="confirmation-content">
-        <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem" />
-        <span>Are you sure you want to delete all products?</span>
+        <i class="pi pi-exclamation-triangle mr-1" style="font-size: 1.5rem" />
+        <span> Are you sure you want to delete all products?</span>
       </div>
 
       <template #footer>
@@ -59,12 +59,12 @@
     <Dialog
       v-model:visible="displayConfirmDeleteProduct"
       :style="{ width: '28.125 rem' }"
-      header="Confirm"
+      header="Confirm Delete"
       :modal="true"
     >
       <div class="confirmation-content">
-        <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem" />
-        <span>Are you sure you want to delete {{ product.name }}?</span>
+        <i class="pi pi-exclamation-triangle mr-1" style="font-size: 1.5rem" />
+        <span> Are you sure you want to delete {{ productToEdit.name }}?</span>
       </div>
 
       <template #footer>
@@ -79,7 +79,7 @@
           label="Yes"
           icon="pi pi-check"
           class="p-button-rounded p-button-success p-button-text"
-          @click="deleteProduct(product)"
+          @click="deleteProduct(productToEdit)"
         />
       </template>
     </Dialog>
@@ -91,8 +91,8 @@
       :modal="true"
     >
       <div class="confirmation-content">
-        <i class="pi pi-exclamation-triangle mr-3" style="font-size: 2rem" />
-        <span>Do you want to update the {{ product.name }}?</span>
+        <i class="pi pi-exclamation-triangle" />
+        <span>Do you want to update the {{ productToEdit.name }}?</span>
       </div>
 
       <template #footer>
@@ -107,7 +107,7 @@
           label="Yes"
           icon="pi pi-check"
           class="p-button-text"
-          @click="showUpdateProductDialog(product)"
+          @click="showUpdateProductDialog(productToEdit)"
         />
       </template>
     </Dialog>
@@ -131,21 +131,21 @@
               <h4>New Product</h4>
               <InputText
                 class="input"
-                v-model.trim="name"
+                v-model.trim="newProduct.name"
                 placeholder="Product name"
               />
 
               <InputNumber
                 @input="updateInputNumberVmodelQuantity"
                 class="input"
-                v-model="quantity"
+                v-model="newProduct.quantity"
                 placeholder="Quantity"
               />
 
               <Button
                 class="p-button-rounded p-button-success"
                 label="Add"
-                :disabled="!name || !quantity"
+                :disabled="!newProduct.name || !newProduct.quantity"
                 icon="pi pi-check"
                 @click="saveProduct"
               />
@@ -165,13 +165,11 @@
 
                 <InputText
                   v-model="filters['global'].value"
-                  placeholder="Search..."
+                  placeholder="Search product..."
                 />
               </span>
             </div>
           </div>
-
-          <br />
         </template>
 
         <Column field="id" header="ID" :sortable="true" style="width: 30%">
@@ -245,9 +243,14 @@ export default {
       displayUpdateProduct: false,
       displayConfirmDeleteProduct: false,
       displayConfirmDeleteAllProducts: false,
-      name: "",
-      quantity: null,
-      product: {},
+      productToEdit: {
+        name: "",
+        quantity: null
+      },
+      newProduct: { 
+        name: "",
+        quantity: null
+      },
       products: [
         { id: 1, name: "Café", quantity: 5 },
         { id: 2, name: "Leite", quantity: 2 },
@@ -276,55 +279,55 @@ export default {
 
   methods: {
     updateInputNumberVmodelQuantity(event) {
-      this.quantity = event.value;
+      this.newProduct.quantity = event.value;
     },
     saveProduct() {
-      if (this.checkDuplicateName(this.nameCapitalization(this.name))) {
-        this.product = this.findProductByName(
-          this.nameCapitalization(this.name)
+      if (this.checkDuplicateName(this.nameCapitalization(this.newProduct.name))) {
+        this.productToEdit = this.findProductByName(
+          this.nameCapitalization(this.newProduct.name)
         );
         this.showUpdateQuantityProductDialog();
       } else {
-        this.product = {
+        this.productToEdit = {
           id: this.newProductId(),
-          name: this.nameCapitalization(this.name),
-          quantity: this.quantity,
+          name: this.nameCapitalization(this.newProduct.name),
+          quantity: this.newProduct.quantity,
         };
-        this.products.push({ ...this.product });
-        this.name = "";
-        this.quantity = null;
-        this.notification("success", `${this.product.name} added!`);
+        this.products.push({ ...this.productToEdit });
+        this.newProduct.name = "";
+        this.newProduct.quantity = null;
+        this.notification("success", `${this.productToEdit.name} added!`);
       }
     },
     updateProduct() {
       if (
         this.checkDuplicateNameUpdate(
-          this.nameCapitalization(this.product.name),
-          this.product.id
+          this.nameCapitalization(this.productToEdit.name),
+          this.productToEdit.id
         )
       ) {
-        this.product = this.findProductByName(
-          this.nameCapitalization(this.product.name)
+        this.productToEdit = this.findProductByName(
+          this.nameCapitalization(this.productToEdit.name)
         );
         this.showUpdateQuantityProductDialog();
         this.hideUpdateProductDialog();
       } else {
         this.products.forEach((content) => {
-          if (content.id === this.product.id) {
+          if (content.id === this.productToEdit.id) {
             let index = this.products.indexOf(content);
-            this.products[index] = this.product;
+            this.products[index] = this.productToEdit;
           }
         });
-        this.notification("success", `${this.product.name} updated!`);
-        this.product = {};
+        this.notification("success", `${this.productToEdit.name} updated!`);
+        this.productToEdit = {};
         this.hideUpdateProductDialog();
       }
     },
     deleteProduct() {
       this.products.forEach((content) => {
-        if (content.id === this.product.id) {
+        if (content.id === this.productToEdit.id) {
           let index = this.products.indexOf(content);
-          this.notification("success", `${this.product.name} deleted!`);
+          this.notification("success", `${this.productToEdit.name} deleted!`);
           this.products.splice(index, 1);
         }
       });
@@ -361,7 +364,7 @@ export default {
     checkDuplicateNameUpdate(name) {
       let flag = false;
       this.products.forEach((content) => {
-        if (content.name === name && content.id !== this.product.id)
+        if (content.name === name && content.id !== this.productToEdit.id)
           flag = true;
       });
       return flag;
@@ -375,14 +378,14 @@ export default {
     },
     showUpdateProductDialog(product) {
       this.hideUpdateProductQuantityDialog();
-      this.product = { ...product };
+      this.productToEdit = { ...product };
       this.displayUpdateProduct = true;
     },
     hideUpdateProductDialog() {
       this.displayUpdateProduct = false;
     },
     showConfirmDeleteDialog(product) {
-      this.product = { ...product };
+      this.productToEdit = { ...product };
       this.displayConfirmDeleteProduct = true;
     },
     hideConfirmDeleteDialog() {
@@ -398,8 +401,8 @@ export default {
       this.displayUpdateQuantityProduct = true;
     },
     hideUpdateProductQuantityDialog() {
-      this.name = "";
-      this.quantity = null;
+      this.newProduct.name = "";
+      this.newProduct.quantity = null;
       this.displayUpdateQuantityProduct = false;
     },
   },
