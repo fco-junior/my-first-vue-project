@@ -1,12 +1,138 @@
 <template>
   <div class="buy-list">
+    <Toolbar class="mb-3">
+      <template #start>
+        <h3>New Product</h3>
+      </template>
+      <template #end>
+        <InputText
+          class="input"
+          v-model.trim="product.name"
+          placeholder="Name"
+        />
+
+        <InputNumber
+          class="input"
+          @input="updateInputNumberVmodelQuantity"
+          v-model="product.quantity"
+          placeholder="Quantity"
+        />
+
+        <Button
+          class="p-button-rounded p-button-success"
+          icon="pi pi-check"
+          label="Add"
+          :disabled="disableAddButton"
+          @click="saveProduct"
+        />
+
+        <Button
+          class="p-button-rounded p-button-danger"
+          icon="pi pi-times"
+          label="Clear All"
+          :disabled="disableClearAllButton"
+          @click="showConfirmProductDialog"
+        />
+      </template>
+    </Toolbar>
+
+    <Toast />
+
+    <DataTable
+      :value="products"
+      v-model:filters="filters"
+      filterDisplay="menu"
+      :globalFilterFields="['id', 'name', 'quantity']"
+      responsiveLayout="scroll"
+      removableSort
+    >
+      <template #empty> No products</template>
+
+      <template #header>
+        <div class="flex justify-content-between align-items-center">
+          <h3>Products</h3>
+          <div>
+            <span class="p-input-icon-left">
+              <i class="pi pi-search" />
+              <InputText
+                v-model="filters['global'].value"
+                placeholder="Search product..."
+              />
+            </span>
+          </div>
+        </div>
+      </template>
+
+      <Column field="id" header="ID" :sortable="true" style="width: 30%">
+        <template #body="{ data }"> {{ data.id }} </template>
+
+        <template #filter="{ filterModel }">
+          <InputNumber
+            class="p-column-filter"
+            v-model="filterModel.value"
+            placeholder="Search by id"
+          />
+        </template>
+      </Column>
+
+      <Column field="name" header="Name" :sortable="true" style="width: 30%">
+        <template #body="{ data }"> {{ data.name }} </template>
+
+        <template #filter="{ filterModel }">
+          <InputText
+            class="p-column-filter"
+            type="text"
+            v-model="filterModel.value"
+            placeholder="Search by name"
+          />
+        </template>
+      </Column>
+
+      <Column
+        field="quantity"
+        header="Quantity"
+        :sortable="true"
+        style="width: 30%"
+      >
+        <template #body="{ data }"> {{ data.quantity }} </template>
+
+        <template #filter="{ filterModel }">
+          <InputNumber
+            class="p-column-filter"
+            v-model="filterModel.value"
+            placeholder="Search by quantity"
+          />
+        </template>
+      </Column>
+
+      <Column header="Actions" style="min-width: 8rem">
+        <template #body="{ data }">
+          <Button
+            class="p-button-rounded"
+            icon="pi pi-pencil"
+            @click="showUpdateProductDialog(data)"
+          />
+
+          <Button
+            class="p-button-rounded p-button-danger"
+            icon="pi pi-trash"
+            @click="showConfirmProductDialog(data)"
+          />
+        </template>
+      </Column>
+    </DataTable>
+
     <Dialog
       header="Update product"
       v-model:visible="displayProduct"
       :style="{ width: '28.125 rem' }"
       :modal="true"
     >
-      <InputText class="input" type="text" v-model.trim="productModified.name" />
+      <InputText
+        class="input"
+        type="text"
+        v-model.trim="productModified.name"
+      />
 
       <InputNumber class="input" v-model="productModified.quantity" :min="1" />
 
@@ -36,7 +162,9 @@
     >
       <div v-if="isDeletingOneProduct" class="confirmation-content">
         <i class="pi pi-exclamation-triangle mr-1" style="font-size: 1.5rem" />
-        <span> Are you sure you want to delete {{ productModified.name }}? </span>
+        <span>
+          Are you sure you want to delete {{ productModified.name }}?
+        </span>
       </div>
       <div v-else class="confirmation-content">
         <i class="pi pi-exclamation-triangle mr-1" style="font-size: 1.5rem" />
@@ -96,126 +224,6 @@
         />
       </template>
     </Dialog>
-
-    <Toast />
-
-    <div>
-      <DataTable
-        :value="products"
-        v-model:filters="filters"
-        filterDisplay="menu"
-        :globalFilterFields="['id', 'name', 'quantity']"
-        responsiveLayout="scroll"
-        removableSort
-      >
-        <template #empty> No products</template>
-
-        <template #header>
-          <div class="flex justify-content-between">
-            <div>
-              <h4>New Product</h4>
-              <InputText
-                class="input"
-                v-model.trim="product.name"
-                placeholder="Name"
-              />
-
-              <InputNumber
-                class="input"
-                @input="updateInputNumberVmodelQuantity"
-                v-model="product.quantity"
-                placeholder="Quantity"
-              />
-
-              <Button
-                class="p-button-rounded p-button-success"
-                icon="pi pi-check"
-                label="Add"
-                :disabled="disableAddButton"
-                @click="saveProduct"
-              />
-
-              <Button
-                class="p-button-rounded p-button-danger"
-                icon="pi pi-times"
-                label="Clear All"
-                :disabled="disableClearAllButton"
-                @click="showConfirmProductDialog"
-              />
-            </div>
-
-            <div>
-              <span class="p-input-icon-left">
-                <i class="pi pi-search" />
-
-                <InputText
-                  v-model="filters['global'].value"
-                  placeholder="Search product..."
-                />
-              </span>
-            </div>
-          </div>
-        </template>
-
-        <Column field="id" header="ID" :sortable="true" style="width: 30%">
-          <template #body="{ data }"> {{ data.id }} </template>
-
-          <template #filter="{ filterModel }">
-            <InputNumber
-              class="p-column-filter"
-              v-model="filterModel.value"
-              placeholder="Search by id"
-            />
-          </template>
-        </Column>
-
-        <Column field="name" header="Name" :sortable="true" style="width: 30%">
-          <template #body="{ data }"> {{ data.name }} </template>
-
-          <template #filter="{ filterModel }">
-            <InputText
-              class="p-column-filter"
-              type="text"
-              v-model="filterModel.value"
-              placeholder="Search by name"
-            />
-          </template>
-        </Column>
-
-        <Column
-          field="quantity"
-          header="Quantity"
-          :sortable="true"
-          style="width: 30%"
-        >
-          <template #body="{ data }"> {{ data.quantity }} </template>
-
-          <template #filter="{ filterModel }">
-            <InputNumber
-              class="p-column-filter"
-              v-model="filterModel.value"
-              placeholder="Search by quantity"
-            />
-          </template>
-        </Column>
-
-        <Column header="Actions" style="min-width: 8rem">
-          <template #body="{ data }">
-            <Button
-              class="p-button-rounded"
-              icon="pi pi-pencil"
-              @click="showUpdateProductDialog(data)"
-            />
-
-            <Button
-              class="p-button-rounded p-button-danger"
-              icon="pi pi-trash"
-              @click="showConfirmProductDialog(data)"
-            />
-          </template>
-        </Column>
-      </DataTable>
-    </div>
   </div>
 </template>
 
@@ -266,10 +274,10 @@ export default {
 
   computed: {
     disableAddButton() {
-      return !this.product.name || !this.product.quantity
+      return !this.product.name || !this.product.quantity;
     },
     disableUpdateButton() {
-      return !this.productModified.name || !this.productModified.quantity
+      return !this.productModified.name || !this.productModified.quantity;
     },
     disableClearAllButton() {
       return !this.products.length;
@@ -340,7 +348,7 @@ export default {
     },
     findProductByName(name) {
       let productFound = {};
-      this.products.forEach(product => {
+      this.products.forEach((product) => {
         if (product.name === name) productFound = product;
       });
       return productFound;
@@ -352,10 +360,14 @@ export default {
       let flag = false;
       products.forEach((product) => {
         if (oldProduct.id) {
-          if (product.name === this.capitalization(oldProduct.name) && product.id !== oldProduct.id)
+          if (
+            product.name === this.capitalization(oldProduct.name) &&
+            product.id !== oldProduct.id
+          )
             flag = true;
         } else {
-          if (product.name === this.capitalization(oldProduct.name)) flag = true;
+          if (product.name === this.capitalization(oldProduct.name))
+            flag = true;
         }
       });
       return flag;
