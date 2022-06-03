@@ -72,13 +72,13 @@
           <Button
             class="p-button-rounded"
             icon="pi pi-pencil"
-            @click="showUpdateProductDialog(data)"
+            @click="updateProduct(data)"
           />
 
           <Button
             class="p-button-rounded p-button-danger"
             icon="pi pi-trash"
-            @click="showConfirmProductDialog(data)"
+            @click="deleteProduct(data)"
           />
         </template>
       </Column>
@@ -115,6 +115,14 @@ export default {
           constraints: [{ value: null, matchMode: FilterMatchMode.CONTAINS }]
         }
       }
+    }
+  },
+  methods: {
+    deleteProduct(product) {
+      this.$emit('delete-product', product)
+    },
+    updateProduct(product) {
+      this.$emit('update-product', product)
     }
   }
 };

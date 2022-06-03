@@ -5,7 +5,7 @@
         <h3>New Product</h3>
       </template>
       <template #end>
-         <InputText
+        <InputText
           class="input"
           v-model.trim="product.name"
           placeholder="Name"
@@ -38,7 +38,11 @@
 
     <Toast />
 
-    <ProductsTable :products="products" />
+    <ProductsTable
+      :products="products"
+      @delete-product="showConfirmProductDialog($event)"
+      @update-product="showConfirmProductUpdateDialog($event)"
+    />
 
     <Dialog
       header="Update product"
@@ -146,7 +150,7 @@
 </template>
 
 <script>
-import ProductsTable from './ProductsTable.vue'
+import ProductsTable from './ProductsTable.vue';
 
 export default {
   name: 'BuyList',
@@ -190,7 +194,9 @@ export default {
   methods: {
     saveProduct() {
       if (this.checkDuplicate(this.products, this.product)) {
-        this.productModified = this.findProductByName(this.capitalization(this.product.name));
+        this.productModified = this.findProductByName(
+          this.capitalization(this.product.name)
+        );
         this.showConfirmProductUpdateDialog();
       } else {
         this.productModified = {
@@ -206,7 +212,9 @@ export default {
     },
     updateProduct() {
       if (this.checkDuplicate(this.products, this.productModified)) {
-        this.productModified = this.findProductByName(this.capitalization(this.productModified.name));
+        this.productModified = this.findProductByName(
+          this.capitalization(this.productModified.name)
+        );
         this.showConfirmProductUpdateDialog();
         this.hideUpdateProductDialog();
       } else {
