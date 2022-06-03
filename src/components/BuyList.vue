@@ -265,9 +265,9 @@ export default {
         quantity: null
       },
       products: [
-        { id: 2, name: 'Café', quantity: 5 },
-        { id: 3, name: 'Leite', quantity: 2 },
-        { id: 1, name: 'Pão', quantity: 10 }
+        { id: 1, name: 'Café', quantity: 5 },
+        { id: 2, name: 'Leite', quantity: 2 },
+        { id: 3, name: 'Pão', quantity: 10 }
       ]
     };
   },
