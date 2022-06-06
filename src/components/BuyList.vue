@@ -1,7 +1,11 @@
 <template>
   <div class="buy-list">
-    
-    <Header :product="product" @save-product="saveProduct"/>
+    <Header
+      :product="product"
+      :quantityOfProducts="products.length"
+      :saveProduct="saveProduct"
+      :confirmDeleteAllProducts="showConfirmProductDialog"
+    />
 
     <Toast />
 
@@ -145,14 +149,8 @@ export default {
   },
 
   computed: {
-    disableAddButton() {
-      return !this.product.name || !this.product.quantity;
-    },
     disableUpdateButton() {
       return !this.productModified.name || !this.productModified.quantity;
-    },
-    disableClearAllButton() {
-      return !this.products.length;
     },
     isDeletingOneProduct() {
       return this.productModified.name ? true : false;

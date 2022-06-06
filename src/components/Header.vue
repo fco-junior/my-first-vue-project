@@ -26,7 +26,7 @@
         icon="pi pi-times"
         label="Clear All"
         :disabled="disableClearAllButton"
-        @click="showConfirmProductDialog"
+        @click="confirmDeleteAllProducts"
       />
     </template>
   </Toolbar>
@@ -37,6 +37,23 @@ export default {
   props: {
     product: {
       type: Object
+    },
+    quantityOfProducts: {
+      type: Number
+    },
+    saveProduct: {
+      type: Function
+    },
+    confirmDeleteAllProducts: {
+      type: Function
+    }
+  },
+  computed: {
+    disableAddButton() {
+      return !this.product.name || !this.product.quantity;
+    },
+    disableClearAllButton() {
+      return !this.quantityOfProducts;
     }
   },
   methods: {
