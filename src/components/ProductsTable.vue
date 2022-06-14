@@ -7,6 +7,7 @@
       :globalFilterFields="['id', 'name', 'quantity']"
       responsiveLayout="scroll"
       removableSort
+      showGridlines
     >
       <template #empty> No products</template>
 
@@ -25,8 +26,16 @@
         </div>
       </template>
 
-      <Column field="id" header="ID" :sortable="true" style="width: 30%">
-        <template #body="{ data }"> {{ data.id }} </template>
+      <Column field="id" :tabindex="-1" :sortable="true" style="width: 30%">
+        <template #header>
+          <span :aria-label="`ID Column Header`" :tabindex="0"> ID </span>
+        </template>
+
+        <template #body="{ data }">
+          <p :aria-label="`ID Column Content: ${data.id}`" :tabindex="0">
+            {{ data.id }}
+          </p>
+        </template>
 
         <template #filter="{ filterModel }">
           <InputNumber
@@ -37,8 +46,16 @@
         </template>
       </Column>
 
-      <Column field="name" header="Name" :sortable="true" style="width: 30%">
-        <template #body="{ data }"> {{ data.name }} </template>
+      <Column field="name" :sortable="true" style="width: 30%">
+        <template #header>
+          <span aria-label="Name Column Header" :tabindex="0"> Name </span>
+        </template>
+
+        <template #body="{ data }">
+          <p :aria-label="`Name Column Content: ${data.name}`" :tabindex="0">
+            {{ data.name }}
+          </p>
+        </template>
 
         <template #filter="{ filterModel }">
           <InputText
@@ -50,13 +67,21 @@
         </template>
       </Column>
 
-      <Column
-        field="quantity"
-        header="Quantity"
-        :sortable="true"
-        style="width: 30%"
-      >
-        <template #body="{ data }"> {{ data.quantity }} </template>
+      <Column field="quantity" :sortable="true" style="width: 30%">
+        <template #header>
+          <span aria-label="Quantity Column Header" :tabindex="0">
+            Quantity
+          </span>
+        </template>
+
+        <template #body="{ data }">
+          <p
+            :aria-label="`Quantity Column Content: ${data.quantity}`"
+            :tabindex="0"
+          >
+            {{ data.quantity }}
+          </p>
+        </template>
 
         <template #filter="{ filterModel }">
           <InputNumber
@@ -67,7 +92,13 @@
         </template>
       </Column>
 
-      <Column header="Actions" style="min-width: 8rem">
+      <Column style="min-width: 8rem">
+        <template #header>
+          <span aria-label="Actions Column Header" :tabindex="0">
+            Actions
+          </span>
+        </template>
+
         <template #body="{ data }">
           <Button
             class="p-button-rounded"
@@ -95,7 +126,7 @@ export default {
       type: Array
     }
   },
-  data(){
+  data() {
     return {
       filters: {
         global: {
@@ -115,14 +146,14 @@ export default {
           constraints: [{ value: null, matchMode: FilterMatchMode.CONTAINS }]
         }
       }
-    }
+    };
   },
   methods: {
     deleteProduct(product) {
-      this.$emit('delete-product', product)
+      this.$emit('delete-product', product);
     },
     updateProduct(product) {
-      this.$emit('update-product', product)
+      this.$emit('update-product', product);
     }
   }
 };
