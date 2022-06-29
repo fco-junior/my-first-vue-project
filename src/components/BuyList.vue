@@ -127,6 +127,7 @@
 <script>
 import ProductsTable from './ProductsTable.vue';
 import Header from './Header.vue';
+import { getAllProducts } from '../services/productsService';
 
 export default {
   name: 'BuyList',
@@ -159,7 +160,20 @@ export default {
       return this.productModified.name ? true : false;
     }
   },
+  async mounted() {
+    await this.requestGetAllProducts();
+  },
   methods: {
+    async requestGetAllProducts() {
+      try {
+        const response = await getAllProducts();
+        let data = response.data.data;
+        console.log(data)
+        this.products = data;
+      } catch {
+        this.products = [];
+      }
+    },
     saveProduct() {
       if (this.checkDuplicate(this.products, this.product)) {
         this.productModified = this.findProductByName(
