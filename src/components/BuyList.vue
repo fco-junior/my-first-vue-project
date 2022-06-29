@@ -2,7 +2,7 @@
   <div class="buy-list">
     <Header
       :product="product"
-      :quantityOfProducts="products.length"
+      :lenghtOfProducts="products.length"
       :saveProduct="saveProduct"
       :confirmDeleteAllProducts="showConfirmProductDialog"
     />
@@ -27,7 +27,11 @@
         v-model.trim="productModified.name"
       />
 
-      <InputNumber class="input" v-model="productModified.quantity" :min="1" />
+      <InputText
+        class="input"
+        type="text"
+        v-model="productModified.description"
+      />
 
       <template #footer>
         <Button
@@ -134,29 +138,27 @@ export default {
       displayProduct: false,
       product: {
         name: '',
-        quantity: null
+        description: ''
       },
       productModified: {
         name: '',
-        quantity: null
+        description: ''
       },
       products: [
-        { id: 1, name: 'Café', quantity: 5 },
-        { id: 2, name: 'Leite', quantity: 2 },
-        { id: 3, name: 'Pão', quantity: 10 }
+        { id: 1, name: 'Café', description: 'Tipo 1' },
+        { id: 2, name: 'Leite', description: 'Tipo 1' },
+        { id: 3, name: 'Pão', description: 'Tipo 1' }
       ]
     };
   },
-
   computed: {
     disableUpdateButton() {
-      return !this.productModified.name || !this.productModified.quantity;
+      return !this.productModified.name || !this.productModified.description;
     },
     isDeletingOneProduct() {
       return this.productModified.name ? true : false;
     }
   },
-
   methods: {
     saveProduct() {
       if (this.checkDuplicate(this.products, this.product)) {
@@ -168,12 +170,12 @@ export default {
         this.productModified = {
           id: this.generateId(this.products),
           name: this.capitalization(this.product.name),
-          quantity: this.product.quantity
+          description: this.product.description
         };
         this.products.push({ ...this.productModified });
         this.notification('success', `${this.productModified.name} added!`);
         this.product.name = '';
-        this.product.quantity = null;
+        this.product.description = '';
       }
     },
     updateProduct() {
@@ -266,7 +268,7 @@ export default {
     },
     hideConfirmProductUpdateDialog() {
       this.product.name = '';
-      this.product.quantity = null;
+      this.product.description = null;
       this.displayConfirmProductUpdate = false;
     }
   }

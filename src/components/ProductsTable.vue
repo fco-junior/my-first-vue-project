@@ -4,7 +4,7 @@
       :value="products"
       v-model:filters="filters"
       filterDisplay="menu"
-      :globalFilterFields="['id', 'name', 'quantity']"
+      :globalFilterFields="['id', 'name', 'description']"
       responsiveLayout="scroll"
       removableSort
       showGridlines
@@ -67,27 +67,28 @@
         </template>
       </Column>
 
-      <Column field="quantity" :sortable="true" style="width: 30%">
+      <Column field="description" :sortable="true" style="width: 30%">
         <template #header>
-          <span aria-label="Quantity Column Header" :tabindex="0">
-            Quantity
+          <span aria-label="Description Column Header" :tabindex="0">
+            Description
           </span>
         </template>
 
         <template #body="{ data }">
           <p
-            :aria-label="`Quantity Column Content: ${data.quantity}`"
+            :aria-label="`Description Column Content: ${data.description}`"
             :tabindex="0"
           >
-            {{ data.quantity }}
+            {{ data.description }}
           </p>
         </template>
 
         <template #filter="{ filterModel }">
-          <InputNumber
+          <InputText
             class="p-column-filter"
+            type="text"
             v-model="filterModel.value"
-            placeholder="Search by quantity"
+            placeholder="Search by description"
           />
         </template>
       </Column>
@@ -141,7 +142,7 @@ export default {
           operator: FilterOperator.AND,
           constraints: [{ value: null, matchMode: FilterMatchMode.CONTAINS }]
         },
-        quantity: {
+        description: {
           operator: FilterOperator.AND,
           constraints: [{ value: null, matchMode: FilterMatchMode.CONTAINS }]
         }

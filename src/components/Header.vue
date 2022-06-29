@@ -4,13 +4,12 @@
       <h3>New Product</h3>
     </template>
     <template #end>
-      <InputText class="input" v-model.trim="product.name" placeholder="Name" />
+      <InputText class="input" v-model.trim="product.name" placeholder="Name"/>
 
-      <InputNumber
+      <InputText
         class="input"
-        @input="updateInputNumberVmodelQuantity"
-        v-model="product.quantity"
-        placeholder="Quantity"
+        v-model="product.description"
+        placeholder="Description"
       />
 
       <Button
@@ -38,8 +37,8 @@ export default {
     product: {
       type: Object
     },
-    quantityOfProducts: {
-      type: Number
+    lenghtOfProducts: {
+      type: String
     },
     saveProduct: {
       type: Function
@@ -50,15 +49,10 @@ export default {
   },
   computed: {
     disableAddButton() {
-      return !this.product.name || !this.product.quantity;
+      return !this.product.name || !this.product.description;
     },
     disableClearAllButton() {
-      return !this.quantityOfProducts;
-    }
-  },
-  methods: {
-    updateInputNumberVmodelQuantity(event) {
-      this.product.quantity = event.value;
+      return !this.lenghtOfProducts;
     }
   }
 };
