@@ -81,7 +81,7 @@
           class="p-button-rounded p-button-success p-button-text"
           icon="pi pi-check"
           label="Yes"
-          @click="deleteProduct(productModified)"
+          @click="requestDeleteProduct(productModified)"
         />
 
         <Button
@@ -127,7 +127,11 @@
 <script>
 import ProductsTable from './ProductsTable.vue';
 import Header from './Header.vue';
-import { getAllProducts, postProduct } from '../services/productsService';
+import {
+  getAllProducts,
+  postProduct,
+  deleteProduct
+} from '../services/productsService';
 
 export default {
   name: 'BuyList',
@@ -178,26 +182,20 @@ export default {
         const response = await postProduct(product);
         let data = response.data;
         this.notification('success', `${data.data.name} added!`);
-      } catch(error) {
+        this.requestGetAllProducts();
+      } catch (error) {
         this.notification('error', `${error.response.data.errors}`);
       }
     },
-    saveProduct() {
-      if (this.checkDuplicate(this.products, this.product)) {
-        this.productModified = this.findProductByName(
-          this.capitalization(this.product.name)
-        );
-        this.showConfirmProductUpdateDialog();
-      } else {
-        this.productModified = {
-          id: this.generateId(this.products),
-          name: this.capitalization(this.product.name),
-          description: this.product.description
-        };
-        this.products.push({ ...this.productModified });
-        this.notification('success', `${this.productModified.name} added!`);
-        this.product.name = '';
-        this.product.description = '';
+    async requestDeleteProduct(product) {
+      this.hideConfirmProductDialog();
+      try {
+        let productName = product.name;
+        await deleteProduct(product.id);
+        this.requestGetAllProducts();
+        this.notification('success', `${productName} deleted!`);
+      } catch {
+        this.notification('error', `${error.response.data.errors}`);
       }
     },
     updateProduct() {
@@ -218,16 +216,6 @@ export default {
         this.notification('success', `${this.productModified.name} updated!`);
         this.productModified = {};
       }
-    },
-    deleteProduct() {
-      this.hideConfirmProductDialog();
-      this.products.forEach((product) => {
-        if (product.id === this.productModified.id) {
-          let index = this.products.indexOf(product);
-          this.notification('success', `${this.productModified.name} deleted!`);
-          this.products.splice(index, 1);
-        }
-      });
     },
     deleteAllProducts() {
       this.hideConfirmProductDialog();

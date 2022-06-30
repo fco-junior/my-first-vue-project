@@ -9,3 +9,7 @@ export function getAllProducts() {
 export function postProduct(product) {
   return axios.post(baseURL, product);
 }
+
+export function deleteProduct(productId) {
+  return axios.delete(baseURL + `/${productId}`);
+}
