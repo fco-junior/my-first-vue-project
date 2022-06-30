@@ -60,7 +60,7 @@
       <div v-if="isDeletingOneProduct" class="confirmation-content">
         <i class="pi pi-exclamation-triangle mr-1" style="font-size: 1.5rem" />
         <span>
-          Are you sure you want to delete {{ productModified.name }}?
+          Are you sure you want to delete {{ product.name }}?
         </span>
       </div>
       <div v-else class="confirmation-content">
@@ -81,7 +81,7 @@
           class="p-button-rounded p-button-success p-button-text"
           icon="pi pi-check"
           label="Yes"
-          @click="requestDeleteProduct(productModified)"
+          @click="requestDeleteProduct(product)"
         />
 
         <Button
@@ -142,7 +142,6 @@ export default {
       displayConfirmProductUpdate: false,
       displayProduct: false,
       product: {
-        id: null,
         name: '',
         description: ''
       },
@@ -151,9 +150,6 @@ export default {
         description: ''
       },
       products: []
-      // { id: 1, name: 'Café', description: 'Tipo 1' },
-      // { id: 2, name: 'Leite', description: 'Tipo 1' },
-      // { id: 3, name: 'Pão', description: 'Tipo 1' }
     };
   },
   computed: {
@@ -161,7 +157,7 @@ export default {
       return !this.productModified.name || !this.productModified.description;
     },
     isDeletingOneProduct() {
-      return this.productModified.name ? true : false;
+      return this.product.name ? true : false;
     }
   },
   async mounted() {
@@ -173,14 +169,16 @@ export default {
         const response = await getAllProducts();
         let data = [...response.data.data];
         this.products = data;
-      } catch {
+      } catch (error) {
         this.products = [];
+        this.notification('error', `${error.response.data.errors}`);
       }
     },
     async requestPostProduct(product) {
       try {
         const response = await postProduct(product);
         let data = response.data;
+        this.clearProductVModel();
         this.notification('success', `${data.data.name} added!`);
         this.requestGetAllProducts();
       } catch (error) {
@@ -194,7 +192,7 @@ export default {
         await deleteProduct(product.id);
         this.requestGetAllProducts();
         this.notification('success', `${productName} deleted!`);
-      } catch {
+      } catch (error) {
         this.notification('error', `${error.response.data.errors}`);
       }
     },
@@ -219,41 +217,13 @@ export default {
     },
     deleteAllProducts() {
       this.hideConfirmProductDialog();
-      this.products = [];
+      this.products.forEach((product) => {
+        this.requestDeleteProduct(product);
+      });
       this.notification('success', 'All products have been deleted');
     },
-    generateId(list = []) {
-      let id = 0;
-      list.forEach((content) => {
-        if (content.id > id) id = content.id;
-      });
-      return id + 1;
-    },
-    findProductByName(name) {
-      let productFound = {};
-      this.products.forEach((product) => {
-        if (product.name === name) productFound = product;
-      });
-      return productFound;
-    },
-    capitalization(string) {
-      return string[0].toUpperCase() + string.substring(1).toLowerCase();
-    },
-    checkDuplicate(products, oldProduct) {
-      let flag = false;
-      products.forEach((product) => {
-        if (oldProduct.id) {
-          if (
-            product.name === this.capitalization(oldProduct.name) &&
-            product.id !== oldProduct.id
-          )
-            flag = true;
-        } else {
-          if (product.name === this.capitalization(oldProduct.name))
-            flag = true;
-        }
-      });
-      return flag;
+    clearProductVModel() {
+      this.product = {...""};
     },
     notification(severity, detail) {
       this.$toast.add({ severity, detail, life: 3000 });
@@ -267,7 +237,7 @@ export default {
       this.displayProduct = false;
     },
     showConfirmProductDialog(product) {
-      this.productModified = { ...product };
+      this.product = { ...product };
       this.displayConfirmProduct = true;
     },
     hideConfirmProductDialog() {
