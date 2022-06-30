@@ -17,7 +17,7 @@
         icon="pi pi-check"
         label="Add"
         :disabled="disableAddButton"
-        @click="saveProduct"
+        @click="saveProduct(product)"
       />
 
       <Button
@@ -37,8 +37,8 @@ export default {
     product: {
       type: Object
     },
-    lenghtOfProducts: {
-      type: String
+    lengthOfProducts: {
+      type: Number
     },
     saveProduct: {
       type: Function
@@ -52,7 +52,7 @@ export default {
       return !this.product.name || !this.product.description;
     },
     disableClearAllButton() {
-      return !this.lenghtOfProducts;
+      return !this.lengthOfProducts;
     }
   }
 };

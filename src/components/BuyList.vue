@@ -2,8 +2,8 @@
   <div class="buy-list">
     <Header
       :product="product"
-      :lenghtOfProducts="products.length"
-      :saveProduct="saveProduct"
+      :lengthOfProducts="products.length"
+      :saveProduct="requestPostProduct"
       :confirmDeleteAllProducts="showConfirmProductDialog"
     />
 
@@ -127,7 +127,7 @@
 <script>
 import ProductsTable from './ProductsTable.vue';
 import Header from './Header.vue';
-import { getAllProducts } from '../services/productsService';
+import { getAllProducts, postProduct } from '../services/productsService';
 
 export default {
   name: 'BuyList',
@@ -138,6 +138,7 @@ export default {
       displayConfirmProductUpdate: false,
       displayProduct: false,
       product: {
+        id: null,
         name: '',
         description: ''
       },
@@ -145,11 +146,10 @@ export default {
         name: '',
         description: ''
       },
-      products: [
-        { id: 1, name: 'Café', description: 'Tipo 1' },
-        { id: 2, name: 'Leite', description: 'Tipo 1' },
-        { id: 3, name: 'Pão', description: 'Tipo 1' }
-      ]
+      products: []
+      // { id: 1, name: 'Café', description: 'Tipo 1' },
+      // { id: 2, name: 'Leite', description: 'Tipo 1' },
+      // { id: 3, name: 'Pão', description: 'Tipo 1' }
     };
   },
   computed: {
@@ -167,11 +167,19 @@ export default {
     async requestGetAllProducts() {
       try {
         const response = await getAllProducts();
-        let data = response.data.data;
-        console.log(data)
+        let data = [...response.data.data];
         this.products = data;
       } catch {
         this.products = [];
+      }
+    },
+    async requestPostProduct(product) {
+      try {
+        const response = await postProduct(product);
+        let data = response.data;
+        this.notification('success', `${data.data.name} added!`);
+      } catch(error) {
+        this.notification('error', `${error.response.data.errors}`);
       }
     },
     saveProduct() {
