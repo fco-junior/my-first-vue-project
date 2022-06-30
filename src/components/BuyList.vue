@@ -12,7 +12,7 @@
     <ProductsTable
       :products="products"
       @delete-product="showConfirmProductDialog($event)"
-      @update-product="showConfirmProductUpdateDialog($event)"
+      @update-product="productModified = $event, showConfirmProductUpdateDialog()"
     />
 
     <Dialog
@@ -46,7 +46,7 @@
           icon="pi pi-check"
           label="Update"
           :disabled="disableUpdateButton"
-          @click="updateProduct"
+          @click="requestPutProduct(productModified)"
         />
       </template>
     </Dialog>
@@ -117,7 +117,7 @@
           class="p-button-rounded p-button-success p-button-text"
           icon="pi pi-check"
           label="Yes"
-          @click="showUpdateProductDialog(productModified)"
+          @click="showUpdateProductDialog"
         />
       </template>
     </Dialog>
@@ -130,7 +130,8 @@ import Header from './Header.vue';
 import {
   getAllProducts,
   postProduct,
-  deleteProduct
+  deleteProduct,
+  putProduct
 } from '../services/productsService';
 
 export default {
@@ -196,23 +197,13 @@ export default {
         this.notification('error', `${error.response.data.errors}`);
       }
     },
-    updateProduct() {
-      if (this.checkDuplicate(this.products, this.productModified)) {
-        this.productModified = this.findProductByName(
-          this.capitalization(this.productModified.name)
-        );
-        this.showConfirmProductUpdateDialog();
-        this.hideUpdateProductDialog();
-      } else {
-        this.products.forEach((product) => {
-          if (product.id === this.productModified.id) {
-            let index = this.products.indexOf(product);
-            this.products[index] = this.productModified;
-          }
-        });
-        this.hideUpdateProductDialog();
-        this.notification('success', `${this.productModified.name} updated!`);
-        this.productModified = {};
+    async requestPutProduct(product) {
+      this.hideUpdateProductDialog();
+      try {
+        await putProduct(product);
+        this.notification('success', `${product.name} updated!`);
+      } catch (error) {
+        this.notification('error', `${error.response.data.errors}`);
       }
     },
     deleteAllProducts() {
@@ -228,16 +219,14 @@ export default {
     notification(severity, detail) {
       this.$toast.add({ severity, detail, life: 3000 });
     },
-    showUpdateProductDialog(product) {
+    showUpdateProductDialog() {
       this.hideConfirmProductUpdateDialog();
-      this.productModified = { ...product };
       this.displayProduct = true;
     },
     hideUpdateProductDialog() {
       this.displayProduct = false;
     },
     showConfirmProductDialog(product) {
-      this.product = { ...product };
       this.displayConfirmProduct = true;
     },
     hideConfirmProductDialog() {

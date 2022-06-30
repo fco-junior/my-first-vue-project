@@ -13,3 +13,7 @@ export function postProduct(product) {
 export function deleteProduct(productId) {
   return axios.delete(baseURL + `/${productId}`);
 }
+
+export function putProduct(product) {
+  return axios.put(baseURL + `/${product.id}`, product);
+}
