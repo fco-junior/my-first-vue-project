@@ -189,10 +189,9 @@ export default {
     async requestDeleteProduct(product) {
       this.hideConfirmProductDialog();
       try {
-        let productName = product.name;
         await deleteProduct(product.id);
         this.requestGetAllProducts();
-        this.notification('success', `${productName} deleted!`);
+        this.notification('success', `${product.name} deleted!`);
       } catch (error) {
         this.notification('error', `${error.response.data.errors}`);
       }
