@@ -11,8 +11,11 @@
 
     <ProductsTable
       :products="products"
-      @delete-product="showConfirmProductDialog($event)"
-      @update-product="productModified = $event, showConfirmProductUpdateDialog()"
+      @search-by-id="requestGetProductById"
+      @delete-product="showConfirmProductDialog"
+      @update-product="
+        (productModified = $event), showConfirmProductUpdateDialog()
+      "
     />
 
     <Dialog
@@ -129,6 +132,7 @@ import ProductsTable from './ProductsTable.vue';
 import Header from './Header.vue';
 import {
   getAllProducts,
+  getProductById,
   postProduct,
   deleteProduct,
   putProduct
@@ -175,6 +179,17 @@ export default {
         this.notification('error', `${error.response.data.errors}`, 2000);
       }
     },
+    async requestGetProductById(productId) {
+      try {
+        const response = await getProductById(productId);
+        let data = { ...response.data.data };
+        let auxArray = [];
+        auxArray.push(data);
+        this.products = auxArray;
+      } catch (error) {
+        this.notification('error', `${error.response.data.errors}`, 2000);
+      }
+    },
     async requestPostProduct(product) {
       try {
         await postProduct(product);
@@ -190,7 +205,11 @@ export default {
       try {
         await deleteProduct(product.id);
         this.requestGetAllProducts();
-        this.notification('success', `${product.name} deleted!`, lifeNotification);
+        this.notification(
+          'success',
+          `${product.name} deleted!`,
+          lifeNotification
+        );
       } catch (error) {
         this.notification('error', `${error.response.data.errors}`, 2000);
       }
@@ -199,6 +218,7 @@ export default {
       this.hideUpdateProductDialog();
       try {
         await putProduct(product);
+        this.requestGetAllProducts;
         this.notification('success', `${product.name} updated!`, 2000);
       } catch (error) {
         this.notification('error', `${error.response.data.errors}`, 2000);

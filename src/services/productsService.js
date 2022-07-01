@@ -6,6 +6,10 @@ export function getAllProducts() {
   return axios.get(baseURL);
 }
 
+export function getProductById(productId) {
+  return axios.get(baseURL + `/${productId}`);
+}
+
 export function postProduct(product) {
   return axios.post(baseURL, product);
 }

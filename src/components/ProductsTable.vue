@@ -15,13 +15,16 @@
         <div class="flex justify-content-between align-items-center">
           <h3>Products</h3>
           <div>
-            <span class="p-input-icon-left">
-              <i class="pi pi-search" />
-              <InputText
-                v-model="filters['global'].value"
-                placeholder="Search product..."
-              />
-            </span>
+            <InputText
+              v-model="searchId"
+              placeholder="Search product by id..."
+            />
+            <Button
+              class="ml-2 p-button-success"
+              icon="pi pi-search"
+              @click="searchById(searchId)"
+              :disabled="searchButtonEnable"
+            />
           </div>
         </div>
       </template>
@@ -129,6 +132,7 @@ export default {
   },
   data() {
     return {
+      searchId: null,
       filters: {
         global: {
           operator: FilterOperator.AND,
@@ -149,12 +153,20 @@ export default {
       }
     };
   },
+  computed: {
+    searchButtonEnable() {
+      return this.searchId ? false : true;
+    }
+  },
   methods: {
     deleteProduct(product) {
       this.$emit('delete-product', product);
     },
     updateProduct(product) {
       this.$emit('update-product', product);
+    },
+    searchById(id) {
+      this.$emit('search-by-id', id);
     }
   }
 };
