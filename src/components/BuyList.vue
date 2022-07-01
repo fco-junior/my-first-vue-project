@@ -60,7 +60,7 @@
       <div v-if="isDeletingOneProduct" class="confirmation-content">
         <i class="pi pi-exclamation-triangle mr-1" style="font-size: 1.5rem" />
         <span>
-          Are you sure you want to delete {{ product.name }}?
+          Are you sure you want to delete {{ productModified.name }}?
         </span>
       </div>
       <div v-else class="confirmation-content">
@@ -81,7 +81,7 @@
           class="p-button-rounded p-button-success p-button-text"
           icon="pi pi-check"
           label="Yes"
-          @click="requestDeleteProduct(product)"
+          @click="requestDeleteProduct(productModified)"
         />
 
         <Button
@@ -158,7 +158,7 @@ export default {
       return !this.productModified.name || !this.productModified.description;
     },
     isDeletingOneProduct() {
-      return this.product.name ? true : false;
+      return this.productModified.id ? true : false;
     }
   },
   async mounted() {
@@ -172,51 +172,54 @@ export default {
         this.products = data;
       } catch (error) {
         this.products = [];
-        this.notification('error', `${error.response.data.errors}`);
+        this.notification('error', `${error.response.data.errors}`, 2000);
       }
     },
     async requestPostProduct(product) {
       try {
-        const response = await postProduct(product);
-        let data = response.data;
+        await postProduct(product);
         this.clearProductVModel();
-        this.notification('success', `${data.data.name} added!`);
+        this.notification('success', `${product.name} added!`, 2000);
         this.requestGetAllProducts();
       } catch (error) {
-        this.notification('error', `${error.response.data.errors}`);
+        this.notification('error', `${error.response.data.errors}`, 2000);
       }
     },
-    async requestDeleteProduct(product) {
+    async requestDeleteProduct(product, lifeNotification) {
       this.hideConfirmProductDialog();
       try {
         await deleteProduct(product.id);
         this.requestGetAllProducts();
-        this.notification('success', `${product.name} deleted!`);
+        this.notification('success', `${product.name} deleted!`, lifeNotification);
       } catch (error) {
-        this.notification('error', `${error.response.data.errors}`);
+        this.notification('error', `${error.response.data.errors}`, 2000);
       }
     },
     async requestPutProduct(product) {
       this.hideUpdateProductDialog();
       try {
         await putProduct(product);
-        this.notification('success', `${product.name} updated!`);
+        this.notification('success', `${product.name} updated!`, 2000);
       } catch (error) {
-        this.notification('error', `${error.response.data.errors}`);
+        this.notification('error', `${error.response.data.errors}`, 2000);
       }
     },
-    deleteAllProducts() {
+    async deleteAllProducts() {
       this.hideConfirmProductDialog();
-      this.products.forEach((product) => {
-        this.requestDeleteProduct(product);
-      });
-      this.notification('success', 'All products have been deleted');
+      try {
+        this.products.forEach((product) => {
+          this.requestDeleteProduct(product, 1);
+        });
+        this.notification('success', 'All products have been deleted', 2000);
+      } catch (error) {
+        this.notification('error', `${error.response.data.errors}`, 2000);
+      }
     },
     clearProductVModel() {
-      this.product = {...""};
+      this.product = { ...'' };
     },
-    notification(severity, detail) {
-      this.$toast.add({ severity, detail, life: 3000 });
+    notification(severity, detail, life) {
+      this.$toast.add({ severity, detail, life });
     },
     showUpdateProductDialog() {
       this.hideConfirmProductUpdateDialog();
@@ -226,6 +229,7 @@ export default {
       this.displayProduct = false;
     },
     showConfirmProductDialog(product) {
+      this.productModified = { ...product };
       this.displayConfirmProduct = true;
     },
     hideConfirmProductDialog() {
