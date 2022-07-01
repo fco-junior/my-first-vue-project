@@ -2,8 +2,8 @@
   <div class="buy-list">
     <Header
       :product="product"
-      :lenghtOfProducts="products.length"
-      :saveProduct="saveProduct"
+      :lengthOfProducts="products.length"
+      :saveProduct="requestPostProduct"
       :confirmDeleteAllProducts="showConfirmProductDialog"
     />
 
@@ -12,7 +12,7 @@
     <ProductsTable
       :products="products"
       @delete-product="showConfirmProductDialog($event)"
-      @update-product="showConfirmProductUpdateDialog($event)"
+      @update-product="productModified = $event, showConfirmProductUpdateDialog()"
     />
 
     <Dialog
@@ -46,7 +46,7 @@
           icon="pi pi-check"
           label="Update"
           :disabled="disableUpdateButton"
-          @click="updateProduct"
+          @click="requestPutProduct(productModified)"
         />
       </template>
     </Dialog>
@@ -81,7 +81,7 @@
           class="p-button-rounded p-button-success p-button-text"
           icon="pi pi-check"
           label="Yes"
-          @click="deleteProduct(productModified)"
+          @click="requestDeleteProduct(productModified)"
         />
 
         <Button
@@ -117,7 +117,7 @@
           class="p-button-rounded p-button-success p-button-text"
           icon="pi pi-check"
           label="Yes"
-          @click="showUpdateProductDialog(productModified)"
+          @click="showUpdateProductDialog"
         />
       </template>
     </Dialog>
@@ -127,6 +127,12 @@
 <script>
 import ProductsTable from './ProductsTable.vue';
 import Header from './Header.vue';
+import {
+  getAllProducts,
+  postProduct,
+  deleteProduct,
+  putProduct
+} from '../services/productsService';
 
 export default {
   name: 'BuyList',
@@ -144,11 +150,7 @@ export default {
         name: '',
         description: ''
       },
-      products: [
-        { id: 1, name: 'Café', description: 'Tipo 1' },
-        { id: 2, name: 'Leite', description: 'Tipo 1' },
-        { id: 3, name: 'Pão', description: 'Tipo 1' }
-      ]
+      products: []
     };
   },
   computed: {
@@ -156,101 +158,71 @@ export default {
       return !this.productModified.name || !this.productModified.description;
     },
     isDeletingOneProduct() {
-      return this.productModified.name ? true : false;
+      return this.productModified.id ? true : false;
     }
   },
+  async mounted() {
+    await this.requestGetAllProducts();
+  },
   methods: {
-    saveProduct() {
-      if (this.checkDuplicate(this.products, this.product)) {
-        this.productModified = this.findProductByName(
-          this.capitalization(this.product.name)
-        );
-        this.showConfirmProductUpdateDialog();
-      } else {
-        this.productModified = {
-          id: this.generateId(this.products),
-          name: this.capitalization(this.product.name),
-          description: this.product.description
-        };
-        this.products.push({ ...this.productModified });
-        this.notification('success', `${this.productModified.name} added!`);
-        this.product.name = '';
-        this.product.description = '';
+    async requestGetAllProducts() {
+      try {
+        const response = await getAllProducts();
+        let data = [...response.data.data];
+        this.products = data;
+      } catch (error) {
+        this.products = [];
+        this.notification('error', `${error.response.data.errors}`, 2000);
       }
     },
-    updateProduct() {
-      if (this.checkDuplicate(this.products, this.productModified)) {
-        this.productModified = this.findProductByName(
-          this.capitalization(this.productModified.name)
-        );
-        this.showConfirmProductUpdateDialog();
-        this.hideUpdateProductDialog();
-      } else {
+    async requestPostProduct(product) {
+      try {
+        await postProduct(product);
+        this.clearProductVModel();
+        this.notification('success', `${product.name} added!`, 2000);
+        this.requestGetAllProducts();
+      } catch (error) {
+        this.notification('error', `${error.response.data.errors}`, 2000);
+      }
+    },
+    async requestDeleteProduct(product, lifeNotification) {
+      this.hideConfirmProductDialog();
+      try {
+        await deleteProduct(product.id);
+        this.requestGetAllProducts();
+        this.notification('success', `${product.name} deleted!`, lifeNotification);
+      } catch (error) {
+        this.notification('error', `${error.response.data.errors}`, 2000);
+      }
+    },
+    async requestPutProduct(product) {
+      this.hideUpdateProductDialog();
+      try {
+        await putProduct(product);
+        this.notification('success', `${product.name} updated!`, 2000);
+      } catch (error) {
+        this.notification('error', `${error.response.data.errors}`, 2000);
+      }
+    },
+    async deleteAllProducts() {
+      this.hideConfirmProductDialog();
+      try {
         this.products.forEach((product) => {
-          if (product.id === this.productModified.id) {
-            let index = this.products.indexOf(product);
-            this.products[index] = this.productModified;
-          }
+          this.requestDeleteProduct(product, 1);
         });
-        this.hideUpdateProductDialog();
-        this.notification('success', `${this.productModified.name} updated!`);
-        this.productModified = {};
+        this.notification('success', 'All products have been deleted', 2000);
+      } catch (error) {
+        this.notification('error', `${error.response.data.errors}`, 2000);
       }
     },
-    deleteProduct() {
-      this.hideConfirmProductDialog();
-      this.products.forEach((product) => {
-        if (product.id === this.productModified.id) {
-          let index = this.products.indexOf(product);
-          this.notification('success', `${this.productModified.name} deleted!`);
-          this.products.splice(index, 1);
-        }
-      });
+    clearProductVModel() {
+      this.product = { ...'' };
     },
-    deleteAllProducts() {
-      this.hideConfirmProductDialog();
-      this.products = [];
-      this.notification('success', 'All products have been deleted');
+    notification(severity, detail, life) {
+      this.$toast.add({ severity, detail, life });
     },
-    generateId(list = []) {
-      let id = 0;
-      list.forEach((content) => {
-        if (content.id > id) id = content.id;
-      });
-      return id + 1;
-    },
-    findProductByName(name) {
-      let productFound = {};
-      this.products.forEach((product) => {
-        if (product.name === name) productFound = product;
-      });
-      return productFound;
-    },
-    capitalization(string) {
-      return string[0].toUpperCase() + string.substring(1).toLowerCase();
-    },
-    checkDuplicate(products, oldProduct) {
-      let flag = false;
-      products.forEach((product) => {
-        if (oldProduct.id) {
-          if (
-            product.name === this.capitalization(oldProduct.name) &&
-            product.id !== oldProduct.id
-          )
-            flag = true;
-        } else {
-          if (product.name === this.capitalization(oldProduct.name))
-            flag = true;
-        }
-      });
-      return flag;
-    },
-    notification(severity, detail) {
-      this.$toast.add({ severity, detail, life: 3000 });
-    },
-    showUpdateProductDialog(product) {
+    showUpdateProductDialog() {
       this.hideConfirmProductUpdateDialog();
-      this.productModified = { ...product };
       this.displayProduct = true;
     },
     hideUpdateProductDialog() {
