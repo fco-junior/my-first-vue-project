@@ -13,9 +13,8 @@
       :products="products"
       @search-by-id="requestGetProductById"
       @delete-product="showConfirmProductDialog"
-      @update-product="
-        (productModified = $event), showConfirmProductUpdateDialog()
-      "
+      @update-product="(productModified = $event), showConfirmProductUpdateDialog()"
+      @inactive-product="requestPatchInactiveProductById"
     />
 
     <Dialog
@@ -135,7 +134,8 @@ import {
   getProductById,
   postProduct,
   deleteProduct,
-  putProduct
+  putProduct,
+  pathInactiveProductById
 } from '../services/productsService';
 
 export default {
@@ -231,6 +231,15 @@ export default {
           this.requestDeleteProduct(product, 1);
         });
         this.notification('success', 'All products have been deleted', 2000);
+      } catch (error) {
+        this.notification('error', `${error.response.data.errors}`, 2000);
+      }
+    },
+    async requestPatchInactiveProductById(product) {
+      try {
+        await pathInactiveProductById(product.id);
+        this.requestGetAllProducts;
+        this.notification('success', `${product.name} inactivated!`, 2000);
       } catch (error) {
         this.notification('error', `${error.response.data.errors}`, 2000);
       }

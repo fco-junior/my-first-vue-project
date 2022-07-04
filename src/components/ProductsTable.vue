@@ -96,7 +96,7 @@
         </template>
       </Column>
 
-      <Column style="min-width: 8rem">
+      <Column style="min-width: 13.25rem">
         <template #header>
           <span aria-label="Actions Column Header" :tabindex="0">
             Actions
@@ -109,11 +109,15 @@
             icon="pi pi-pencil"
             @click="updateProduct(data)"
           />
-
           <Button
             class="p-button-rounded p-button-danger"
             icon="pi pi-trash"
             @click="deleteProduct(data)"
+          />
+          <Button
+            class="p-button-rounded p-button-secondary"
+            label="inactive"
+            @click="inactiveProduct(data)"
           />
         </template>
       </Column>
@@ -167,6 +171,9 @@ export default {
     },
     searchById(id) {
       this.$emit('search-by-id', id);
+    },
+    inactiveProduct(product){
+      this.$emit('inactive-product', product);
     }
   }
 };

@@ -21,3 +21,7 @@ export function deleteProduct(productId) {
 export function putProduct(product) {
   return axios.put(baseURL + `/${product.id}`, product);
 }
+
+export function pathInactiveProductById(productId) {
+  return axios.patch(baseURL + `/${productId}/inactive`);
+}
