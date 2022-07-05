@@ -13,7 +13,7 @@
       :products="products"
       @search-by-id="requestGetProductById"
       @delete-product="showConfirmProductDialog"
-      @update-product="(productModified = $event), showConfirmProductUpdateDialog()"
+      @update-product="showConfirmProductUpdateDialog"
       @change-products-active-inactive="changeProductsActiveInactive"
       @inactive-product="requestPatchInactiveProductById"
       @active-product="requestPatchActiveProductById"
@@ -136,6 +136,7 @@ export default {
       displayConfirmProduct: false,
       displayConfirmProductUpdate: false,
       displayProduct: false,
+      optionActiveSelected: true,
       product: {
         name: '',
         description: ''
@@ -153,12 +154,12 @@ export default {
     }
   },
   async mounted() {
-    await this.requestGetAllProducts(true);
+    await this.requestGetAllProducts();
   },
   methods: {
-    async requestGetAllProducts(isActive) {
+    async requestGetAllProducts() {
       try {
-        const response = await getAllProducts(isActive);
+        const response = await getAllProducts(this.optionActiveSelected);
         let data = [...response.data.data];
         this.products = data;
       } catch (error) {
@@ -182,7 +183,7 @@ export default {
         await postProduct(product);
         this.clearProductVModel();
         this.notification('success', `${product.name} added!`);
-        this.requestGetAllProducts(true);
+        this.requestGetAllProducts();
       } catch (error) {
         this.notification('error', `${error.response.data.errors}`);
       }
@@ -191,7 +192,7 @@ export default {
       this.hideConfirmProductDialog();
       try {
         await deleteProduct(product.id);
-        this.requestGetAllProducts(false);
+        this.requestGetAllProducts(this.optionActiveSelected);
         this.notification(
           'success',
           `${product.name} deleted!`,
@@ -205,7 +206,7 @@ export default {
       this.hideUpdateProductDialog();
       try {
         await putProduct(product);
-        this.requestGetAllProducts(true);
+        this.requestGetAllProducts(this.optionActiveSelected);
         this.notification('success', `${product.name} updated!`);
       } catch (error) {
         this.notification('error', `${error.response.data.errors}`);
@@ -214,7 +215,7 @@ export default {
     async requestPatchInactiveProductById(product) {
       try {
         await pathInactiveProductById(product.id);
-        this.requestGetAllProducts(true);
+        this.requestGetAllProducts(this.optionActiveSelected);
         this.notification('success', `${product.name} inactivated!`);
       } catch (error) {
         this.notification('error', `${error.response.data.errors}`);
@@ -223,13 +224,14 @@ export default {
     async requestPatchActiveProductById(product) {
       try {
         await pathActiveProductById(product.id);
-        this.requestGetAllProducts(false);
+        this.requestGetAllProducts(this.optionActiveSelected);
         this.notification('success', `${product.name} activated!`);
       } catch (error) {
         this.notification('error', `${error.response.data.errors}`);
       }
     },
     changeProductsActiveInactive(option) {
+      this.optionActiveSelected = option;
       this.requestGetAllProducts(option);
     },
     clearProductVModel() {
@@ -252,7 +254,8 @@ export default {
     hideConfirmProductDialog() {
       this.displayConfirmProduct = false;
     },
-    showConfirmProductUpdateDialog() {
+    showConfirmProductUpdateDialog(product) {
+      this.productModified = {...product};
       this.displayConfirmProductUpdate = true;
     },
     hideConfirmProductUpdateDialog() {

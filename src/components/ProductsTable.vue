@@ -13,16 +13,19 @@
 
       <template #header>
         <div class="flex justify-content-between align-items-center">
-          <h3>Products</h3>
-          <Dropdown
-            v-model="activeOptionSelected"
-            :options="activeOptions"
-            optionLabel="name"
-            optionValue="value"
-            placeholder="active or inactive"
-            @change="changeProductsActiveInactive"
-          />
-          <div>
+          <div class="header-table">
+            <h3>Products</h3>
+            <Dropdown
+              class="dropdown"
+              v-model="activeOptionSelected"
+              :options="activeOptions"
+              optionLabel="name"
+              optionValue="value"
+              placeholder="active or inactive"
+              @change="changeProductsActiveInactive"
+            />
+          </div>
+          <div v-if="enableSearchById">
             <InputText
               v-model="searchId"
               placeholder="Search product by id..."
@@ -104,7 +107,7 @@
         </template>
       </Column>
 
-      <Column style="min-width: 13.25rem">
+      <Column style="min-width: 10rem">
         <template #header>
           <span aria-label="Actions Column Header" :tabindex="0">
             Actions
@@ -112,29 +115,31 @@
         </template>
 
         <template #body="{ data }">
-          <Button
-            class="p-button-rounded"
-            icon="pi pi-pencil"
-            @click="updateProduct(data)"
-          />
-          <Button
-            class="p-button-rounded p-button-danger"
-            icon="pi pi-trash"
-            :disabled="enableDeleteButton"
-            @click="deleteProduct(data)"
-          />
-          <Button
-            v-if="activeOrInactiveButton"
-            class="p-button-rounded p-button-secondary"
-            icon="pi pi-eye-slash"
-            @click="inactiveProduct(data)"
-          />
-          <Button
-            v-else
-            class="p-button-rounded p-button-secondary"
-            icon="pi pi-eye"
-            @click="activeProduct(data)"
-          />
+          <div class="action-button">
+            <Button
+              class="p-button-rounded"
+              icon="pi pi-pencil"
+              @click="updateProduct(data)"
+            />
+            <Button
+              v-if="activeOrInactiveButton"
+              class="p-button-rounded p-button-secondary"
+              icon="pi pi-eye-slash"
+              @click="inactiveProduct(data)"
+            />
+            <Button
+              v-else
+              class="p-button-rounded p-button-secondary"
+              icon="pi pi-eye"
+              @click="activeProduct(data)"
+            />
+            <Button
+              v-if="!enableDeleteButton"
+              class="p-button-rounded p-button-danger"
+              icon="pi pi-trash"
+              @click="deleteProduct(data)"
+            />
+          </div>
         </template>
       </Column>
     </DataTable>
@@ -152,8 +157,11 @@ export default {
   },
   data() {
     return {
-      activeOptions: [{name: 'active', value: true}, {name: 'inactive', value: false}],
-      activeOptionSelected: {name: 'active', value: true},
+      activeOptions: [
+        { name: 'active', value: true },
+        { name: 'inactive', value: false }
+      ],
+      activeOptionSelected: true,
       filters: {
         global: {
           operator: FilterOperator.AND,
@@ -178,12 +186,15 @@ export default {
   computed: {
     searchButtonEnable() {
       return this.searchId ? false : true;
-    }, 
-    enableDeleteButton() {
-      return this.activeOptionSelected ? true : false;
     },
-    activeOrInactiveButton(){
-      return this.activeOptionSelected ? true : false;
+    enableDeleteButton() {
+      return this.activeOptionSelected;
+    },
+    activeOrInactiveButton() {
+      return this.activeOptionSelected;
+    },
+    enableSearchById() {
+      return this.activeOptionSelected;
     }
   },
   methods: {
@@ -194,6 +205,7 @@ export default {
       this.$emit('update-product', product);
     },
     searchById(id) {
+      this.searchId = null;
       this.$emit('search-by-id', id);
     },
     changeProductsActiveInactive() {
