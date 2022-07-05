@@ -16,6 +16,7 @@
       @update-product="(productModified = $event), showConfirmProductUpdateDialog()"
       @change-products-active-inactive="changeProductsActiveInactive"
       @inactive-product="requestPatchInactiveProductById"
+      @active-product="requestPatchActiveProductById"
     />
 
     <Dialog
@@ -186,11 +187,11 @@ export default {
         this.notification('error', `${error.response.data.errors}`);
       }
     },
-    async requestDeleteProduct(product, lifeNotification) {
+    async requestDeleteProduct(product) {
       this.hideConfirmProductDialog();
       try {
         await deleteProduct(product.id);
-        this.requestGetAllProducts(true);
+        this.requestGetAllProducts(false);
         this.notification(
           'success',
           `${product.name} deleted!`,
