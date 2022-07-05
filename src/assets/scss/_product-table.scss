@@ -1,0 +1,17 @@
+.product-table {
+  .header-table {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 1rem;
+
+    .dropdown {
+      height: fit-content;
+    }
+  }
+  
+  .action-button {
+    display: flex;
+    justify-content: center;
+  }
+}
