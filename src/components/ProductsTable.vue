@@ -14,6 +14,14 @@
       <template #header>
         <div class="flex justify-content-between align-items-center">
           <h3>Products</h3>
+          <Dropdown
+            v-model="activeOptionSelected"
+            :options="activeOptions"
+            optionLabel="name"
+            optionValue="value"
+            placeholder="active or inactive"
+            @change="changeProductsActiveInactive"
+          />
           <div>
             <InputText
               v-model="searchId"
@@ -116,7 +124,7 @@
           />
           <Button
             class="p-button-rounded p-button-secondary"
-            label="inactive"
+            icon="pi pi-eye-slash"
             @click="inactiveProduct(data)"
           />
         </template>
@@ -136,7 +144,8 @@ export default {
   },
   data() {
     return {
-      searchId: null,
+      activeOptions: [{name: 'active', value: true}, {name: 'inactive', value: false}],
+      activeOptionSelected: null,
       filters: {
         global: {
           operator: FilterOperator.AND,
@@ -154,7 +163,8 @@ export default {
           operator: FilterOperator.AND,
           constraints: [{ value: null, matchMode: FilterMatchMode.CONTAINS }]
         }
-      }
+      },
+      searchId: null
     };
   },
   computed: {
@@ -172,8 +182,11 @@ export default {
     searchById(id) {
       this.$emit('search-by-id', id);
     },
-    inactiveProduct(product){
+    inactiveProduct(product) {
       this.$emit('inactive-product', product);
+    },
+    changeProductsActiveInactive() {
+      this.$emit('change-products-active-inactive', this.activeOptionSelected);
     }
   }
 };

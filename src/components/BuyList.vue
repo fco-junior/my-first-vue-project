@@ -14,6 +14,7 @@
       @search-by-id="requestGetProductById"
       @delete-product="showConfirmProductDialog"
       @update-product="(productModified = $event), showConfirmProductUpdateDialog()"
+      @change-products-active-inactive="changeProductsActiveInactive"
       @inactive-product="requestPatchInactiveProductById"
     />
 
@@ -166,12 +167,12 @@ export default {
     }
   },
   async mounted() {
-    await this.requestGetAllProducts();
+    await this.requestGetAllProducts(true);
   },
   methods: {
-    async requestGetAllProducts() {
+    async requestGetAllProducts(isActive) {
       try {
-        const response = await getAllProducts();
+        const response = await getAllProducts(isActive);
         let data = [...response.data.data];
         this.products = data;
       } catch (error) {
@@ -195,7 +196,7 @@ export default {
         await postProduct(product);
         this.clearProductVModel();
         this.notification('success', `${product.name} added!`, 2000);
-        this.requestGetAllProducts();
+        this.requestGetAllProducts(true);
       } catch (error) {
         this.notification('error', `${error.response.data.errors}`, 2000);
       }
@@ -204,7 +205,7 @@ export default {
       this.hideConfirmProductDialog();
       try {
         await deleteProduct(product.id);
-        this.requestGetAllProducts();
+        this.requestGetAllProducts(true);
         this.notification(
           'success',
           `${product.name} deleted!`,
@@ -218,7 +219,7 @@ export default {
       this.hideUpdateProductDialog();
       try {
         await putProduct(product);
-        this.requestGetAllProducts;
+        this.requestGetAllProducts(true);
         this.notification('success', `${product.name} updated!`, 2000);
       } catch (error) {
         this.notification('error', `${error.response.data.errors}`, 2000);
@@ -238,11 +239,15 @@ export default {
     async requestPatchInactiveProductById(product) {
       try {
         await pathInactiveProductById(product.id);
-        this.requestGetAllProducts;
+        this.requestGetAllProducts(true);
         this.notification('success', `${product.name} inactivated!`, 2000);
       } catch (error) {
         this.notification('error', `${error.response.data.errors}`, 2000);
       }
+    },
+    changeProductsActiveInactive(option) {
+      // this.products = [];
+      this.requestGetAllProducts(option);
     },
     clearProductVModel() {
       this.product = { ...'' };
