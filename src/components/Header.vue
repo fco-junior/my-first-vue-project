@@ -19,14 +19,6 @@
         :disabled="disableAddButton"
         @click="saveProduct(product)"
       />
-
-      <Button
-        class="p-button-rounded p-button-danger"
-        icon="pi pi-times"
-        label="Clear All"
-        :disabled="disableClearAllButton"
-        @click="confirmDeleteAllProducts"
-      />
     </template>
   </Toolbar>
 </template>
@@ -50,9 +42,6 @@ export default {
   computed: {
     disableAddButton() {
       return !this.product.name || !this.product.description;
-    },
-    disableClearAllButton() {
-      return !this.lengthOfProducts;
     }
   }
 };

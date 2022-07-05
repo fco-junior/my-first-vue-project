@@ -120,12 +120,20 @@
           <Button
             class="p-button-rounded p-button-danger"
             icon="pi pi-trash"
+            :disabled="enableDeleteButton"
             @click="deleteProduct(data)"
           />
           <Button
+            v-if="activeOrInactiveButton"
             class="p-button-rounded p-button-secondary"
             icon="pi pi-eye-slash"
             @click="inactiveProduct(data)"
+          />
+          <Button
+            v-else
+            class="p-button-rounded p-button-secondary"
+            icon="pi pi-eye"
+            @click="activeProduct(data)"
           />
         </template>
       </Column>
@@ -145,7 +153,7 @@ export default {
   data() {
     return {
       activeOptions: [{name: 'active', value: true}, {name: 'inactive', value: false}],
-      activeOptionSelected: null,
+      activeOptionSelected: {name: 'active', value: true},
       filters: {
         global: {
           operator: FilterOperator.AND,
@@ -170,6 +178,12 @@ export default {
   computed: {
     searchButtonEnable() {
       return this.searchId ? false : true;
+    }, 
+    enableDeleteButton() {
+      return this.activeOptionSelected ? true : false;
+    },
+    activeOrInactiveButton(){
+      return this.activeOptionSelected ? true : false;
     }
   },
   methods: {
@@ -182,11 +196,14 @@ export default {
     searchById(id) {
       this.$emit('search-by-id', id);
     },
+    changeProductsActiveInactive() {
+      this.$emit('change-products-active-inactive', this.activeOptionSelected);
+    },
     inactiveProduct(product) {
       this.$emit('inactive-product', product);
     },
-    changeProductsActiveInactive() {
-      this.$emit('change-products-active-inactive', this.activeOptionSelected);
+    activeProduct(product) {
+      this.$emit('active-product', product);
     }
   }
 };

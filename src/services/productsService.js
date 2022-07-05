@@ -25,3 +25,7 @@ export function putProduct(product) {
 export function pathInactiveProductById(productId) {
   return axios.patch(baseURL + `/${productId}/inactive`);
 }
+
+export function pathActiveProductById(productId) {
+  return axios.patch(baseURL + `/${productId}/active`);
+}

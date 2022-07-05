@@ -60,15 +60,11 @@
       header="Confirm"
       :modal="true"
     >
-      <div v-if="isDeletingOneProduct" class="confirmation-content">
+      <div class="confirmation-content">
         <i class="pi pi-exclamation-triangle mr-1" style="font-size: 1.5rem" />
         <span>
           Are you sure you want to delete {{ productModified.name }}?
         </span>
-      </div>
-      <div v-else class="confirmation-content">
-        <i class="pi pi-exclamation-triangle mr-1" style="font-size: 1.5rem" />
-        <span> Are you sure you want to delete all products?</span>
       </div>
 
       <template #footer>
@@ -80,19 +76,10 @@
         />
 
         <Button
-          v-if="isDeletingOneProduct"
           class="p-button-rounded p-button-success p-button-text"
           icon="pi pi-check"
           label="Yes"
           @click="requestDeleteProduct(productModified)"
-        />
-
-        <Button
-          v-else
-          class="p-button-rounded p-button-success p-button-text"
-          icon="pi pi-check"
-          label="Yes"
-          @click="deleteAllProducts"
         />
       </template>
     </Dialog>
@@ -136,7 +123,8 @@ import {
   postProduct,
   deleteProduct,
   putProduct,
-  pathInactiveProductById
+  pathInactiveProductById,
+  pathActiveProductById
 } from '../services/productsService';
 
 export default {
@@ -161,9 +149,6 @@ export default {
   computed: {
     disableUpdateButton() {
       return !this.productModified.name || !this.productModified.description;
-    },
-    isDeletingOneProduct() {
-      return this.productModified.id ? true : false;
     }
   },
   async mounted() {
@@ -177,7 +162,7 @@ export default {
         this.products = data;
       } catch (error) {
         this.products = [];
-        this.notification('error', `${error.response.data.errors}`, 2000);
+        this.notification('error', `${error.response.data.errors}`);
       }
     },
     async requestGetProductById(productId) {
@@ -188,17 +173,17 @@ export default {
         auxArray.push(data);
         this.products = auxArray;
       } catch (error) {
-        this.notification('error', `${error.response.data.errors}`, 2000);
+        this.notification('error', `${error.response.data.errors}`);
       }
     },
     async requestPostProduct(product) {
       try {
         await postProduct(product);
         this.clearProductVModel();
-        this.notification('success', `${product.name} added!`, 2000);
+        this.notification('success', `${product.name} added!`);
         this.requestGetAllProducts(true);
       } catch (error) {
-        this.notification('error', `${error.response.data.errors}`, 2000);
+        this.notification('error', `${error.response.data.errors}`);
       }
     },
     async requestDeleteProduct(product, lifeNotification) {
@@ -212,7 +197,7 @@ export default {
           lifeNotification
         );
       } catch (error) {
-        this.notification('error', `${error.response.data.errors}`, 2000);
+        this.notification('error', `${error.response.data.errors}`);
       }
     },
     async requestPutProduct(product) {
@@ -220,40 +205,37 @@ export default {
       try {
         await putProduct(product);
         this.requestGetAllProducts(true);
-        this.notification('success', `${product.name} updated!`, 2000);
+        this.notification('success', `${product.name} updated!`);
       } catch (error) {
-        this.notification('error', `${error.response.data.errors}`, 2000);
-      }
-    },
-    async deleteAllProducts() {
-      this.hideConfirmProductDialog();
-      try {
-        this.products.forEach((product) => {
-          this.requestDeleteProduct(product, 1);
-        });
-        this.notification('success', 'All products have been deleted', 2000);
-      } catch (error) {
-        this.notification('error', `${error.response.data.errors}`, 2000);
+        this.notification('error', `${error.response.data.errors}`);
       }
     },
     async requestPatchInactiveProductById(product) {
       try {
         await pathInactiveProductById(product.id);
         this.requestGetAllProducts(true);
-        this.notification('success', `${product.name} inactivated!`, 2000);
+        this.notification('success', `${product.name} inactivated!`);
       } catch (error) {
-        this.notification('error', `${error.response.data.errors}`, 2000);
+        this.notification('error', `${error.response.data.errors}`);
+      }
+    },
+    async requestPatchActiveProductById(product) {
+      try {
+        await pathActiveProductById(product.id);
+        this.requestGetAllProducts(false);
+        this.notification('success', `${product.name} activated!`);
+      } catch (error) {
+        this.notification('error', `${error.response.data.errors}`);
       }
     },
     changeProductsActiveInactive(option) {
-      // this.products = [];
       this.requestGetAllProducts(option);
     },
     clearProductVModel() {
       this.product = { ...'' };
     },
-    notification(severity, detail, life) {
-      this.$toast.add({ severity, detail, life });
+    notification(severity, detail) {
+      this.$toast.add({ severity, detail, life: 2000 });
     },
     showUpdateProductDialog() {
       this.hideConfirmProductUpdateDialog();
