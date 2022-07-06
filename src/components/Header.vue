@@ -4,19 +4,32 @@
       <h3>New Product</h3>
     </template>
     <template #end>
-      <InputText class="input" v-model.trim="product.name" placeholder="Name"/>
+      <InputText
+        class="input"
+        v-model.trim="product.name"
+        placeholder="Enter product name"
+      />
 
       <InputText
         class="input"
         v-model="product.description"
-        placeholder="Description"
+        placeholder="Enter product description"
+      />
+
+      <InputNumber
+        class="input"
+        v-model="product.price"
+        mode="decimal"
+        locale="en-US"
+        :minFractionDigits="2"
+        placeholder="Enter product price"
       />
 
       <Button
         class="p-button-rounded p-button-success"
         icon="pi pi-check"
-        label="Add"
-        :disabled="disableAddButton"
+        label="Confirm"
+        :disabled="disableConfirmButton"
         @click="saveProduct(product)"
       />
     </template>
@@ -27,21 +40,18 @@
 export default {
   props: {
     product: {
-      type: Object
-    },
-    lengthOfProducts: {
-      type: Number
-    },
-    saveProduct: {
-      type: Function
-    },
-    confirmDeleteAllProducts: {
-      type: Function
+      type: Object,
+      default: new Object()
     }
   },
   computed: {
-    disableAddButton() {
+    disableConfirmButton() {
       return !this.product.name || !this.product.description;
+    }
+  },
+  methods: {
+    saveProduct(product) {
+      this.$emit('post-product', product);
     }
   }
 };

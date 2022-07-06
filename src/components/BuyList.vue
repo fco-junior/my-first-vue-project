@@ -3,7 +3,7 @@
     <Header
       :product="product"
       :lengthOfProducts="products.length"
-      :saveProduct="requestPostProduct"
+      @post-product="requestPostProduct"
       :confirmDeleteAllProducts="showConfirmProductDialog"
     />
 
@@ -139,11 +139,13 @@ export default {
       optionActiveSelected: true,
       product: {
         name: '',
-        description: ''
+        description: '',
+        price: null
       },
       productModified: {
         name: '',
-        description: ''
+        description: '',
+        price: null
       },
       products: []
     };

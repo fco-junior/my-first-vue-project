@@ -40,7 +40,7 @@
         </div>
       </template>
 
-      <Column field="id" :tabindex="-1" :sortable="true" style="width: 30%">
+      <Column field="id" :tabindex="-1" :sortable="true" style="width: 25%">
         <template #header>
           <span :aria-label="`ID Column Header`" :tabindex="0"> ID </span>
         </template>
@@ -60,7 +60,7 @@
         </template>
       </Column>
 
-      <Column field="name" :sortable="true" style="width: 30%">
+      <Column field="name" :sortable="true" style="width: 25%">
         <template #header>
           <span aria-label="Name Column Header" :tabindex="0"> Name </span>
         </template>
@@ -81,7 +81,7 @@
         </template>
       </Column>
 
-      <Column field="description" :sortable="true" style="width: 30%">
+      <Column field="description" :sortable="true" style="width: 25%">
         <template #header>
           <span aria-label="Description Column Header" :tabindex="0">
             Description
@@ -103,6 +103,31 @@
             type="text"
             v-model="filterModel.value"
             placeholder="Search by description"
+          />
+        </template>
+      </Column>
+
+      <Column field="price" :sortable="true" style="width: 25%">
+        <template #header>
+          <span aria-label="Price Column Header" :tabindex="0">
+            Price
+          </span>
+        </template>
+
+        <template #body="{ data }">
+          <p
+            :aria-label="`Price Column Content: ${data.price}`"
+            :tabindex="0"
+          >
+            {{ `R$ ${data.price}` }}
+          </p>
+        </template>
+
+        <template #filter="{ filterModel }">
+          <InputNumber
+            class="p-column-filter"
+            v-model="filterModel.value"
+            placeholder="Search by price"
           />
         </template>
       </Column>
@@ -178,7 +203,11 @@ export default {
         description: {
           operator: FilterOperator.AND,
           constraints: [{ value: null, matchMode: FilterMatchMode.CONTAINS }]
-        }
+        },
+        price: {
+          operator: FilterOperator.AND,
+          constraints: [{ value: null, matchMode: FilterMatchMode.CONTAINS }]
+        },
       },
       searchId: null
     };
