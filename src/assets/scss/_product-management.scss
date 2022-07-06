@@ -1,8 +1,4 @@
-@import './product-table';
-
-.buy-list {
-  background: linear-gradient(to right, #abbaab, #ffffff);
-
+.product-management {
   .input {
     margin-right: 0.313rem;
   }
@@ -15,15 +11,14 @@
   }
 
   Button:focus-visible {
-    outline: 2px solid #F2AF00;
+    outline: 2px solid #f2af00;
   }
 
   .p-button-rounded {
-    margin-left: 0.320rem;
+    margin-left: 0.32rem;
   }
 
   .p-button-success {
-    background: #269D26;
+    background: #269d26;
   }
-
 }

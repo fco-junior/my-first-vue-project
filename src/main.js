@@ -20,7 +20,7 @@ import 'primevue/resources/primevue.min.css';
 import 'primeicons/primeicons.css';
 import 'primeflex/primeflex.css'
 
-import './assets/scss/_style.scss';
+import './assets/scss/_layout.scss';
 
 const app = createApp(App);
 
