@@ -7,6 +7,13 @@
     margin-right: 0.313rem;
   }
 
+  .input-update {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    height: 5rem;
+  }
+
   Button:focus-visible {
     outline: 2px solid #F2AF00;
   }
