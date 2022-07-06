@@ -8,12 +8,14 @@
         class="input"
         v-model.trim="product.name"
         placeholder="Enter product name"
+        v-tooltip.bottom="'Enter product name'"
       />
 
       <InputText
         class="input"
         v-model="product.description"
         placeholder="Enter product description"
+        v-tooltip.bottom="'Enter product description'"
       />
 
       <InputNumber
@@ -23,6 +25,7 @@
         locale="en-US"
         :minFractionDigits="2"
         placeholder="Enter product price"
+        v-tooltip.bottom="'Enter product price'"
       />
 
       <Button
@@ -30,6 +33,7 @@
         icon="pi pi-check"
         label="Confirm"
         :disabled="disableConfirmButton"
+        v-tooltip.bottom="'Confirm and save product'"
         @click="saveProduct(product)"
       />
     </template>
@@ -46,7 +50,7 @@ export default {
   },
   computed: {
     disableConfirmButton() {
-      return !this.product.name || !this.product.description;
+      return !this.product.name || !this.product.description || !this.product.price;
     }
   },
   methods: {

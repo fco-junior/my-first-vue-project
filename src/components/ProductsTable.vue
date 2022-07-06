@@ -26,15 +26,17 @@
             />
           </div>
           <div v-if="enableSearchById">
-            <InputText
+            <InputNumber
               v-model="searchId"
               placeholder="Search product by id..."
+              v-tooltip.bottom="'Search product by id '"
             />
             <Button
               class="ml-2 p-button-success"
               icon="pi pi-search"
               @click="searchById(searchId)"
               :disabled="searchButtonEnable"
+              v-tooltip.bottom="'Search product'"
             />
           </div>
         </div>
@@ -144,24 +146,28 @@
             <Button
               class="p-button-rounded"
               icon="pi pi-pencil"
+              v-tooltip.bottom="'Update produtc'"
               @click="updateProduct(data)"
             />
             <Button
               v-if="activeOrInactiveButton"
               class="p-button-rounded p-button-secondary"
               icon="pi pi-eye-slash"
+              v-tooltip.bottom="'Inactive produtc'"
               @click="inactiveProduct(data)"
             />
             <Button
               v-else
               class="p-button-rounded p-button-secondary"
               icon="pi pi-eye"
+              v-tooltip.bottom="'Active produtc'"
               @click="activeProduct(data)"
             />
             <Button
               v-if="!enableDeleteButton"
               class="p-button-rounded p-button-danger"
               icon="pi pi-trash"
+              v-tooltip.bottom="'Delete product'"
               @click="deleteProduct(data)"
             />
           </div>

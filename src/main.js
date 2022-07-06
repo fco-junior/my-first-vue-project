@@ -13,6 +13,7 @@ import ToastService from 'primevue/toastservice';
 import Toast from 'primevue/toast';
 import Toolbar from 'primevue/toolbar';
 import Dropdown from 'primevue/dropdown';
+import Tooltip from 'primevue/tooltip';
 
 import 'primevue/resources/themes/saga-blue/theme.css';
 import 'primevue/resources/primevue.min.css';
@@ -25,6 +26,8 @@ const app = createApp(App);
 
 app.use(PrimeVue);
 app.use(ToastService);
+
+app.directive('tooltip', Tooltip);
 
 app.component('InputText', InputText);
 app.component('InputNumber', InputNumber);
