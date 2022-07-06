@@ -4,7 +4,7 @@
       :product="product"
       :lengthOfProducts="products.length"
       @post-product="requestPostProduct"
-      :confirmDeleteAllProducts="showConfirmProductDialog"
+      :confirmDeleteAllProducts="showConfirmDeleteProductDialog"
     />
 
     <Toast />
@@ -12,8 +12,8 @@
     <ProductsTable
       :products="products"
       @search-by-id="requestGetProductById"
-      @delete-product="showConfirmProductDialog"
-      @update-product="showConfirmProductUpdateDialog"
+      @delete-product="showConfirmDeleteProductDialog"
+      @update-product="showUpdateProductDialog"
       @change-products-active-inactive="changeProductsActiveInactive"
       @inactive-product="requestPatchInactiveProductById"
       @active-product="requestPatchActiveProductById"
@@ -21,22 +21,39 @@
 
     <Dialog
       header="Update product"
-      v-model:visible="displayProduct"
-      :style="{ width: '28.125 rem' }"
+      v-model:visible="displayUpdateProduct"
       :modal="true"
     >
-      <InputText
-        class="input"
-        type="text"
-        v-model.trim="productModified.name"
-      />
+      <div class="input-update">
+        <div class="p-float-label">
+          <InputText
+            class="input"
+            id="product-name"
+            type="text"
+            v-model.trim="productModified.name"
+          />
+          <label for="product-name">Product name</label>
+        </div>
 
-      <InputText
-        class="input"
-        type="text"
-        v-model="productModified.description"
-      />
+        <div class="p-float-label">
+          <InputText
+            class="input"
+            id="product-description"
+            type="text"
+            v-model="productModified.description"
+          />
+          <label for="product-description">Product description</label>
+        </div>
 
+        <div class="p-float-label">
+          <InputNumber
+            class="input"
+            id="product-price"
+            v-model="productModified.price"
+          />
+          <label for="product-price">Product price</label>
+        </div>
+      </div>
       <template #footer>
         <Button
           class="p-button-rounded p-button-danger p-button-text"
@@ -56,7 +73,7 @@
     </Dialog>
 
     <Dialog
-      v-model:visible="displayConfirmProduct"
+      v-model:visible="displayConfirmDeleteProduct"
       :style="{ width: '28.125 rem' }"
       header="Confirm"
       :modal="true"
@@ -73,7 +90,7 @@
           class="p-button-rounded p-button-danger p-button-text"
           icon="pi pi-times"
           label="No"
-          @click="hideConfirmProductDialog"
+          @click="hideConfirmDeleteProductDialog"
         />
 
         <Button
@@ -81,34 +98,6 @@
           icon="pi pi-check"
           label="Yes"
           @click="requestDeleteProduct(productModified)"
-        />
-      </template>
-    </Dialog>
-
-    <Dialog
-      v-model:visible="displayConfirmProductUpdate"
-      header="The product already exists"
-      :style="{ width: '28.125 rem' }"
-      :modal="true"
-    >
-      <div class="confirmation-content">
-        <i class="pi pi-exclamation-triangle mr-1" style="font-size: 1.5rem" />
-        <span> Do you want to update the {{ productModified.name }}?</span>
-      </div>
-
-      <template #footer>
-        <Button
-          class="p-button-danger p-button-text"
-          icon="pi pi-times"
-          label="No"
-          @click="hideConfirmProductUpdateDialog"
-        />
-
-        <Button
-          class="p-button-rounded p-button-success p-button-text"
-          icon="pi pi-check"
-          label="Yes"
-          @click="showUpdateProductDialog"
         />
       </template>
     </Dialog>
@@ -133,9 +122,8 @@ export default {
   components: { ProductsTable, Header },
   data() {
     return {
-      displayConfirmProduct: false,
-      displayConfirmProductUpdate: false,
-      displayProduct: false,
+      displayConfirmDeleteProduct: false,
+      displayUpdateProduct: false,
       optionActiveSelected: true,
       product: {
         name: '',
@@ -191,14 +179,13 @@ export default {
       }
     },
     async requestDeleteProduct(product) {
-      this.hideConfirmProductDialog();
+      this.hideConfirmDeleteProductDialog();
       try {
         await deleteProduct(product.id);
         this.requestGetAllProducts(this.optionActiveSelected);
         this.notification(
           'success',
-          `${product.name} deleted!`,
-          lifeNotification
+          `${product.name} deleted!`
         );
       } catch (error) {
         this.notification('error', `${error.response.data.errors}`);
@@ -209,7 +196,7 @@ export default {
       try {
         await putProduct(product);
         this.requestGetAllProducts(this.optionActiveSelected);
-        this.notification('success', `${product.name} updated!`);
+        this.notification('info', `${product.name} updated!`);
       } catch (error) {
         this.notification('error', `${error.response.data.errors}`);
       }
@@ -218,7 +205,7 @@ export default {
       try {
         await pathInactiveProductById(product.id);
         this.requestGetAllProducts(this.optionActiveSelected);
-        this.notification('success', `${product.name} inactivated!`);
+        this.notification('info', `${product.name} inactivated!`);
       } catch (error) {
         this.notification('error', `${error.response.data.errors}`);
       }
@@ -227,7 +214,7 @@ export default {
       try {
         await pathActiveProductById(product.id);
         this.requestGetAllProducts(this.optionActiveSelected);
-        this.notification('success', `${product.name} activated!`);
+        this.notification('info', `${product.name} activated!`);
       } catch (error) {
         this.notification('error', `${error.response.data.errors}`);
       }
@@ -242,28 +229,19 @@ export default {
     notification(severity, detail) {
       this.$toast.add({ severity, detail, life: 2000 });
     },
-    showUpdateProductDialog() {
-      this.hideConfirmProductUpdateDialog();
-      this.displayProduct = true;
+    showUpdateProductDialog(product) {
+      this.productModified = {...product}
+      this.displayUpdateProduct = true;
     },
     hideUpdateProductDialog() {
-      this.displayProduct = false;
+      this.displayUpdateProduct = false;
     },
-    showConfirmProductDialog(product) {
+    showConfirmDeleteProductDialog(product) {
       this.productModified = { ...product };
-      this.displayConfirmProduct = true;
+      this.displayConfirmDeleteProduct = true;
     },
-    hideConfirmProductDialog() {
-      this.displayConfirmProduct = false;
-    },
-    showConfirmProductUpdateDialog(product) {
-      this.productModified = {...product};
-      this.displayConfirmProductUpdate = true;
-    },
-    hideConfirmProductUpdateDialog() {
-      this.product.name = '';
-      this.product.description = null;
-      this.displayConfirmProductUpdate = false;
+    hideConfirmDeleteProductDialog() {
+      this.displayConfirmDeleteProduct = false;
     }
   }
 };

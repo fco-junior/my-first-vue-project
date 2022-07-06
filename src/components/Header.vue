@@ -4,30 +4,36 @@
       <h3>New Product</h3>
     </template>
     <template #end>
-      <InputText
-        class="input"
-        v-model.trim="product.name"
-        placeholder="Enter product name"
-        v-tooltip.bottom="'Enter product name'"
-      />
-
-      <InputText
-        class="input"
-        v-model="product.description"
-        placeholder="Enter product description"
-        v-tooltip.bottom="'Enter product description'"
-      />
-
-      <InputNumber
-        class="input"
-        v-model="product.price"
-        mode="decimal"
-        locale="en-US"
-        :minFractionDigits="2"
-        placeholder="Enter product price"
-        v-tooltip.bottom="'Enter product price'"
-      />
-
+      <div class="p-float-label">
+        <InputText
+          class="input"
+          id="product-name"
+          v-model.trim="product.name"
+          v-tooltip.bottom="'Enter product name'"
+        />
+        <label for="product-name">Product name</label>
+      </div>
+      <div class="p-float-label">
+        <InputText
+          class="input"
+          id="product-description"
+          v-model="product.description"
+          v-tooltip.bottom="'Enter product description'"
+        />
+        <label for="product-description">Product description</label>
+      </div>
+      <div class="p-float-label">
+        <InputNumber
+          class="input"
+          id="product-price"
+          v-model="product.price"
+          mode="decimal"
+          locale="en-US"
+          :minFractionDigits="2"
+          v-tooltip.bottom="'Enter product price'"
+        />
+        <label for="product-price">Product price</label>
+      </div>
       <Button
         class="p-button-rounded p-button-success"
         icon="pi pi-check"
@@ -50,7 +56,9 @@ export default {
   },
   computed: {
     disableConfirmButton() {
-      return !this.product.name || !this.product.description || !this.product.price;
+      return (
+        !this.product.name || !this.product.description || !this.product.price
+      );
     }
   },
   methods: {

@@ -25,12 +25,15 @@
               @change="changeProductsActiveInactive"
             />
           </div>
-          <div v-if="enableSearchById">
-            <InputNumber
-              v-model="searchId"
-              placeholder="Search product by id..."
-              v-tooltip.bottom="'Search product by id '"
-            />
+          <div class="header-table-search">
+            <div class="p-float-label">
+              <InputNumber
+                v-model="searchId"
+                id="search-by-id"
+                v-tooltip.bottom="'Search product by id'"
+              />
+              <label for="search-by-id">Search product by id</label>
+            </div>
             <Button
               class="ml-2 p-button-success"
               icon="pi pi-search"
@@ -111,16 +114,11 @@
 
       <Column field="price" :sortable="true" style="width: 25%">
         <template #header>
-          <span aria-label="Price Column Header" :tabindex="0">
-            Price
-          </span>
+          <span aria-label="Price Column Header" :tabindex="0"> Price </span>
         </template>
 
         <template #body="{ data }">
-          <p
-            :aria-label="`Price Column Content: ${data.price}`"
-            :tabindex="0"
-          >
+          <p :aria-label="`Price Column Content: ${data.price}`" :tabindex="0">
             {{ `R$ ${data.price}` }}
           </p>
         </template>
@@ -213,7 +211,7 @@ export default {
         price: {
           operator: FilterOperator.AND,
           constraints: [{ value: null, matchMode: FilterMatchMode.CONTAINS }]
-        },
+        }
       },
       searchId: null
     };
