@@ -1,5 +1,5 @@
 <template>
-  <div class="buy-list">
+  <div class="product-management">
     <Header
       :product="product"
       :lengthOfProducts="products.length"
