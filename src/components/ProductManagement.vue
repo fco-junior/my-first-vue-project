@@ -10,7 +10,6 @@
     <Toast />
 
     <ProductsTable
-      :products="products"
       @search-by-id="requestGetProductById"
       @delete-product="showConfirmDeleteProductDialog"
       @update-product="showUpdateProductDialog"
@@ -24,36 +23,35 @@
       v-model:visible="displayUpdateProduct"
       :modal="true"
     >
-      <div class="input-update">
-        <div class="p-float-label">
-          <InputText
-            class="input"
-            id="product-name"
-            type="text"
-            v-model.trim="productModified.name"
-          />
-          <label for="product-name">Product name</label>
-        </div>
-
-        <div class="p-float-label">
-          <InputText
-            class="input"
-            id="product-description"
-            type="text"
-            v-model="productModified.description"
-          />
-          <label for="product-description">Product description</label>
-        </div>
-
-        <div class="p-float-label">
-          <InputNumber
-            class="input"
-            id="product-price"
-            v-model="productModified.price"
-          />
-          <label for="product-price">Product price</label>
-        </div>
+      <div class="p-float-label">
+        <InputText
+          class="input"
+          id="product-name"
+          type="text"
+          v-model.trim="productModified.name"
+        />
+        <label for="product-name">Product name</label>
       </div>
+
+      <div class="p-float-label">
+        <InputText
+          class="input"
+          id="product-description"
+          type="text"
+          v-model="productModified.description"
+        />
+        <label for="product-description">Product description</label>
+      </div>
+
+      <div class="p-float-label">
+        <InputNumber
+          class="input"
+          id="product-price"
+          v-model="productModified.price"
+        />
+        <label for="product-price">Product price</label>
+      </div>
+
       <template #footer>
         <Button
           class="p-button-rounded p-button-danger p-button-text"
@@ -105,8 +103,8 @@
 </template>
 
 <script>
-import ProductsTable from './ProductsTable.vue';
 import Header from './Header.vue';
+import ProductsTable from './ProductsTable.vue';
 import {
   getAllProducts,
   getProductById,
@@ -116,29 +114,26 @@ import {
   pathInactiveProductById,
   pathActiveProductById
 } from '../services/productsService';
+import { mapActions } from 'vuex';
 
 export default {
-  name: 'BuyList',
+  name: 'ProductManagement',
   components: { ProductsTable, Header },
   data() {
     return {
       displayConfirmDeleteProduct: false,
       displayUpdateProduct: false,
       optionActiveSelected: true,
-      product: {
-        name: '',
-        description: '',
-        price: null
-      },
-      productModified: {
-        name: '',
-        description: '',
-        price: null
-      },
-      products: []
+      productModified: {},
     };
   },
   computed: {
+    product() {
+      return this.$store.state.product;
+    },
+    products() {
+      return this.$store.state.products.products;
+    },
     disableUpdateButton() {
       return !this.productModified.name || !this.productModified.description;
     }
@@ -147,11 +142,12 @@ export default {
     await this.requestGetAllProducts();
   },
   methods: {
+    ...mapActions('products', ['loadProducts']),
     async requestGetAllProducts() {
       try {
         const response = await getAllProducts(this.optionActiveSelected);
         let data = [...response.data.data];
-        this.products = data;
+        this.loadProducts(data);
       } catch (error) {
         this.products = [];
         this.notification('error', `${error.response.data.errors}`);
@@ -183,10 +179,7 @@ export default {
       try {
         await deleteProduct(product.id);
         this.requestGetAllProducts(this.optionActiveSelected);
-        this.notification(
-          'success',
-          `${product.name} deleted!`
-        );
+        this.notification('success', `${product.name} deleted!`);
       } catch (error) {
         this.notification('error', `${error.response.data.errors}`);
       }
@@ -230,7 +223,7 @@ export default {
       this.$toast.add({ severity, detail, life: 2000 });
     },
     showUpdateProductDialog(product) {
-      this.productModified = {...product}
+      this.productModified = { ...product };
       this.displayUpdateProduct = true;
     },
     hideUpdateProductDialog() {

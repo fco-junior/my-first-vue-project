@@ -48,13 +48,11 @@
 
 <script>
 export default {
-  props: {
-    product: {
-      type: Object,
-      default: new Object()
-    }
-  },
+  name: 'Header',
   computed: {
+    product(){
+      return this.$store.state.product;
+    },
     disableConfirmButton() {
       return (
         !this.product.name || !this.product.description || !this.product.price

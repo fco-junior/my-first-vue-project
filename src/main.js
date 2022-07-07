@@ -1,5 +1,6 @@
 import { createApp } from 'vue';
 import App from './App.vue';
+import store from './config/store/store';
 
 import PrimeVue from 'primevue/config';
 import InputText from 'primevue/inputtext';
@@ -14,6 +15,7 @@ import Toast from 'primevue/toast';
 import Toolbar from 'primevue/toolbar';
 import Dropdown from 'primevue/dropdown';
 import Tooltip from 'primevue/tooltip';
+import Card from 'primevue/card';
 
 import 'primevue/resources/themes/saga-blue/theme.css';
 import 'primevue/resources/primevue.min.css';
@@ -26,6 +28,7 @@ const app = createApp(App);
 
 app.use(PrimeVue);
 app.use(ToastService);
+app.use(store);
 
 app.directive('tooltip', Tooltip);
 
@@ -39,5 +42,6 @@ app.component('ConfirmDialog', ConfirmDialog);
 app.component('Toast', Toast);
 app.component('Toolbar', Toolbar);
 app.component('Dropdown', Dropdown);
+app.component('Card', Card);
 
 app.mount('#app');

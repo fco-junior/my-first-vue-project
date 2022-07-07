@@ -51,9 +51,11 @@
         </template>
 
         <template #body="{ data }">
-          <p :aria-label="`ID Column Content: ${data.id}`" :tabindex="0">
-            {{ data.id }}
-          </p>
+          <Button
+            class="button p-button-text"
+            :label="`${data.id}`"
+            v-tooltip.right="'Access product details'"
+          />
         </template>
 
         <template #filter="{ filterModel }">
@@ -179,11 +181,7 @@
 import { FilterMatchMode, FilterOperator } from 'primevue/api';
 
 export default {
-  props: {
-    products: {
-      type: Array
-    }
-  },
+  name: 'ProductsTable',
   data() {
     return {
       activeOptions: [
@@ -217,6 +215,9 @@ export default {
     };
   },
   computed: {
+    products() {
+      return this.$store.state.products.products;
+    },
     searchButtonEnable() {
       return this.searchId ? false : true;
     },
