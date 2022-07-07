@@ -1,10 +1,7 @@
 <template>
   <div class="product-management">
     <Header
-      :product="product"
-      :lengthOfProducts="products.length"
       @post-product="requestPostProduct"
-      :confirmDeleteAllProducts="showConfirmDeleteProductDialog"
     />
 
     <Toast />
@@ -73,7 +70,7 @@
     <Dialog
       v-model:visible="displayConfirmDeleteProduct"
       :style="{ width: '28.125 rem' }"
-      header="Confirm"
+      header="Confirm delete"
       :modal="true"
     >
       <div class="confirmation-content">
@@ -123,7 +120,7 @@ export default {
     return {
       displayConfirmDeleteProduct: false,
       displayUpdateProduct: false,
-      optionActiveSelected: true,
+      isActive: true,
       productModified: {},
     };
   },
@@ -142,10 +139,10 @@ export default {
     await this.requestGetAllProducts();
   },
   methods: {
-    ...mapActions('products', ['loadProducts']),
+    ...mapActions('products', ['setProducts']),
     async requestGetAllProducts() {
       try {
-        const response = await getAllProducts(this.optionActiveSelected);
+        const response = await getAllProducts(this.isActive);
         let data = [...response.data.data];
         this.loadProducts(data);
       } catch (error) {
@@ -157,9 +154,9 @@ export default {
       try {
         const response = await getProductById(productId);
         let data = { ...response.data.data };
-        let auxArray = [];
-        auxArray.push(data);
-        this.products = auxArray;
+        let product = [];
+        product.push(data);
+        this.loadProducts(product);
       } catch (error) {
         this.notification('error', `${error.response.data.errors}`);
       }
@@ -178,7 +175,7 @@ export default {
       this.hideConfirmDeleteProductDialog();
       try {
         await deleteProduct(product.id);
-        this.requestGetAllProducts(this.optionActiveSelected);
+        this.requestGetAllProducts(this.isActive);
         this.notification('success', `${product.name} deleted!`);
       } catch (error) {
         this.notification('error', `${error.response.data.errors}`);
@@ -188,7 +185,7 @@ export default {
       this.hideUpdateProductDialog();
       try {
         await putProduct(product);
-        this.requestGetAllProducts(this.optionActiveSelected);
+        this.requestGetAllProducts(this.isActive);
         this.notification('info', `${product.name} updated!`);
       } catch (error) {
         this.notification('error', `${error.response.data.errors}`);
@@ -197,7 +194,7 @@ export default {
     async requestPatchInactiveProductById(product) {
       try {
         await pathInactiveProductById(product.id);
-        this.requestGetAllProducts(this.optionActiveSelected);
+        this.requestGetAllProducts(this.isActive);
         this.notification('info', `${product.name} inactivated!`);
       } catch (error) {
         this.notification('error', `${error.response.data.errors}`);
@@ -206,14 +203,14 @@ export default {
     async requestPatchActiveProductById(product) {
       try {
         await pathActiveProductById(product.id);
-        this.requestGetAllProducts(this.optionActiveSelected);
+        this.requestGetAllProducts(this.isActive);
         this.notification('info', `${product.name} activated!`);
       } catch (error) {
         this.notification('error', `${error.response.data.errors}`);
       }
     },
     changeProductsActiveInactive(option) {
-      this.optionActiveSelected = option;
+      this.isActive = option;
       this.requestGetAllProducts(option);
     },
     clearProductVModel() {

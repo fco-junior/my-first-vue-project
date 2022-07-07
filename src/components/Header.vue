@@ -50,13 +50,11 @@
 export default {
   name: 'Header',
   computed: {
-    product(){
+    product() {
       return this.$store.state.product;
     },
     disableConfirmButton() {
-      return (
-        !this.product.name || !this.product.description || !this.product.price
-      );
+      return !this.product.name || !this.product.description || !this.product.price;
     }
   },
   methods: {

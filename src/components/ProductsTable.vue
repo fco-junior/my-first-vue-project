@@ -4,7 +4,6 @@
       :value="products"
       v-model:filters="filters"
       filterDisplay="menu"
-      :globalFilterFields="['id', 'name', 'description']"
       responsiveLayout="scroll"
       removableSort
       showGridlines
@@ -17,7 +16,7 @@
             <h3>Products</h3>
             <Dropdown
               class="dropdown"
-              v-model="activeOptionSelected"
+              v-model="isActive"
               :options="activeOptions"
               optionLabel="name"
               optionValue="value"
@@ -45,9 +44,9 @@
         </div>
       </template>
 
-      <Column field="id" :tabindex="-1" :sortable="true" style="width: 25%">
+      <Column field="id" :sortable="true" style="width: 25%">
         <template #header>
-          <span :aria-label="`ID Column Header`" :tabindex="0"> ID </span>
+          <span :aria-label="`ID Column Header`"> ID </span>
         </template>
 
         <template #body="{ data }">
@@ -69,7 +68,7 @@
 
       <Column field="name" :sortable="true" style="width: 25%">
         <template #header>
-          <span aria-label="Name Column Header" :tabindex="0"> Name </span>
+          <span aria-label="Name Column Header"> Name </span>
         </template>
 
         <template #body="{ data }">
@@ -90,7 +89,7 @@
 
       <Column field="description" :sortable="true" style="width: 25%">
         <template #header>
-          <span aria-label="Description Column Header" :tabindex="0">
+          <span aria-label="Description Column Header">
             Description
           </span>
         </template>
@@ -116,7 +115,7 @@
 
       <Column field="price" :sortable="true" style="width: 25%">
         <template #header>
-          <span aria-label="Price Column Header" :tabindex="0"> Price </span>
+          <span aria-label="Price Column Header"> Price </span>
         </template>
 
         <template #body="{ data }">
@@ -136,7 +135,7 @@
 
       <Column style="min-width: 10rem">
         <template #header>
-          <span aria-label="Actions Column Header" :tabindex="0">
+          <span aria-label="Actions Column Header">
             Actions
           </span>
         </template>
@@ -150,7 +149,7 @@
               @click="updateProduct(data)"
             />
             <Button
-              v-if="activeOrInactiveButton"
+              v-if="isActive"
               class="p-button-rounded p-button-secondary"
               icon="pi pi-eye-slash"
               v-tooltip.bottom="'Inactive produtc'"
@@ -164,7 +163,7 @@
               @click="activeProduct(data)"
             />
             <Button
-              v-if="!enableDeleteButton"
+              v-if="!isActive"
               class="p-button-rounded p-button-danger"
               icon="pi pi-trash"
               v-tooltip.bottom="'Delete product'"
@@ -188,7 +187,7 @@ export default {
         { name: 'active', value: true },
         { name: 'inactive', value: false }
       ],
-      activeOptionSelected: true,
+      isActive: true,
       filters: {
         global: {
           operator: FilterOperator.AND,
@@ -220,15 +219,6 @@ export default {
     },
     searchButtonEnable() {
       return this.searchId ? false : true;
-    },
-    enableDeleteButton() {
-      return this.activeOptionSelected;
-    },
-    activeOrInactiveButton() {
-      return this.activeOptionSelected;
-    },
-    enableSearchById() {
-      return this.activeOptionSelected;
     }
   },
   methods: {
@@ -243,7 +233,7 @@ export default {
       this.$emit('search-by-id', id);
     },
     changeProductsActiveInactive() {
-      this.$emit('change-products-active-inactive', this.activeOptionSelected);
+      this.$emit('change-products-active-inactive', this.isActive);
     },
     inactiveProduct(product) {
       this.$emit('inactive-product', product);

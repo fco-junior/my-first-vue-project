@@ -6,12 +6,12 @@ export default {
     };
   },
   mutations: {
-    loadProducts(state, payload) {
+    setProducts(state, payload) {
       state.products = payload;
     }
   },
   actions: {
-    loadProducts({ commit }, payload) {
+    setProducts({ commit }, payload) {
       commit('loadProducts', payload);
     }
   }
