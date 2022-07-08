@@ -5,27 +5,27 @@
       <template #title> Product Details </template>
       <template #content>
         <div class="p-card-content">
-          <span>
+          <P>
             ID: <strong>{{ product.id }}</strong>
-          </span>
-          <span>
+          </P>
+          <P>
             Name: <strong>{{ product.name }}</strong>
-          </span>
-          <span>
+          </P>
+          <P>
             Description: <strong>{{ product.description }}</strong>
-          </span>
-          <span>
+          </P>
+          <P>
             Price: <strong>R$ {{ product.price }}</strong>
-          </span>
-          <span>
+          </P>
+          <P>
             Active: <strong>{{ isActive }}</strong>
-          </span>
-          <span>
+          </P>
+          <P>
             Created Date: <strong>{{ product.createdDate }}</strong>
-          </span>
-          <span>
+          </P>
+          <P>
             Updated Date: <strong>{{ product.updatedDate }}</strong>
-          </span>
+          </P>
         </div>
       </template>
       <template #footer>

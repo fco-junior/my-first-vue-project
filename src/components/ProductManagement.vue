@@ -8,8 +8,8 @@
       @delete-product="showConfirmDeleteProductDialog"
       @update-product="showUpdateProductDialog"
       @change-products-active-inactive="changeProductsActiveInactive"
-      @inactive-product="requestPatchInactiveProductById"
-      @active-product="requestPatchActiveProductById"
+      @inactive-product="showConfirmInactiveProductDialog"
+      @active-product="showConfirmActiveProductDialog"
     />
 
     <Dialog
@@ -93,6 +93,66 @@
         />
       </template>
     </Dialog>
+
+    <Dialog
+      v-model:visible="displayConfirmInactiveProduct"
+      :style="{ width: '28.125 rem' }"
+      header="Confirm inactive"
+      :modal="true"
+    >
+      <div class="confirmation-content">
+        <i class="pi pi-exclamation-triangle mr-1" style="font-size: 1.5rem" />
+        <span>
+          Are you sure you want to inactive {{ productModified.name }}?
+        </span>
+      </div>
+
+      <template #footer>
+        <Button
+          class="p-button-rounded p-button-danger p-button-text"
+          icon="pi pi-times"
+          label="No"
+          @click="hideConfirmInactiveProductDialog"
+        />
+
+        <Button
+          class="p-button-rounded p-button-success p-button-text"
+          icon="pi pi-check"
+          label="Yes"
+          @click="requestPatchInactiveProductById(productModified)"
+        />
+      </template>
+    </Dialog>
+    
+    <Dialog
+      v-model:visible="displayConfirmActiveProduct"
+      :style="{ width: '28.125 rem' }"
+      header="Confirm active"
+      :modal="true"
+    >
+      <div class="confirmation-content">
+        <i class="pi pi-exclamation-triangle mr-1" style="font-size: 1.5rem" />
+        <span>
+          Are you sure you want to active {{ productModified.name }}?
+        </span>
+      </div>
+
+      <template #footer>
+        <Button
+          class="p-button-rounded p-button-danger p-button-text"
+          icon="pi pi-times"
+          label="No"
+          @click="hideConfirmActiveProductDialog"
+        />
+
+        <Button
+          class="p-button-rounded p-button-success p-button-text"
+          icon="pi pi-check"
+          label="Yes"
+          @click="requestPatchActiveProductById(productModified)"
+        />
+      </template>
+    </Dialog>
   </div>
 </template>
 
@@ -114,6 +174,8 @@ export default {
   components: { ProductsTable, Header },
   data() {
     return {
+      displayConfirmActiveProduct: false,
+      displayConfirmInactiveProduct: false,
       displayConfirmDeleteProduct: false,
       displayUpdateProduct: false,
       isActive: true,
@@ -187,6 +249,7 @@ export default {
       }
     },
     async requestPatchInactiveProductById(product) {
+      this.hideConfirmInactiveProductDialog();
       try {
         await pathInactiveProductById(product.id);
         this.requestGetAllProducts(this.isActive);
@@ -196,6 +259,7 @@ export default {
       }
     },
     async requestPatchActiveProductById(product) {
+      this.hideConfirmActiveProductDialog();
       try {
         await pathActiveProductById(product.id);
         this.requestGetAllProducts(this.isActive);
@@ -227,6 +291,20 @@ export default {
     },
     hideConfirmDeleteProductDialog() {
       this.displayConfirmDeleteProduct = false;
+    },
+    showConfirmInactiveProductDialog(product) {
+      this.productModified = { ...product };
+      this.displayConfirmInactiveProduct = true;
+    },
+    hideConfirmInactiveProductDialog() {
+      this.displayConfirmInactiveProduct = false;
+    },
+    showConfirmActiveProductDialog(product) {
+      this.productModified = { ...product };
+      this.displayConfirmActiveProduct = true;
+    },
+    hideConfirmActiveProductDialog() {
+      this.displayConfirmActiveProduct = false;
     }
   }
 };
