@@ -1,9 +1,5 @@
 .product-management {
-  .input {
-    margin-right: 0.313rem;
-  }
-
-  Button:focus-visible {
+  .p-button:focus-visible {
     outline: 2px solid #f2af00;
   }
 
@@ -13,6 +9,14 @@
 
   .p-button-success {
     background: #269d26;
+  }
+
+  p {
+    width: fit-content;
+
+    &:focus-visible {
+      outline: 2px solid #f2af00;
+    }
   }
 }
 
