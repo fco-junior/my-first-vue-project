@@ -1,6 +1,7 @@
 import { createApp } from 'vue';
 import App from './App.vue';
 import store from './config/store/store';
+import router from './config/router';
 
 import PrimeVue from 'primevue/config';
 import InputText from 'primevue/inputtext';
@@ -29,6 +30,7 @@ const app = createApp(App);
 app.use(PrimeVue);
 app.use(ToastService);
 app.use(store);
+app.use(router);
 
 app.directive('tooltip', Tooltip);
 

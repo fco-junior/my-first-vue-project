@@ -4,9 +4,10 @@
       :value="products"
       v-model:filters="filters"
       filterDisplay="menu"
-      responsiveLayout="scroll"
       removableSort
       showGridlines
+      :scrollable="true"
+      scrollHeight="25rem"
     >
       <template #empty> No products</template>
 
@@ -50,11 +51,11 @@
         </template>
 
         <template #body="{ data }">
-          <Button
-            class="button p-button-text"
-            :label="`${data.id}`"
+          <RouterLink
+            :to="`/products/${data.id}/details`"
             v-tooltip.right="'Access product details'"
-          />
+            >{{ data.id }}</RouterLink
+          >
         </template>
 
         <template #filter="{ filterModel }">
@@ -89,9 +90,7 @@
 
       <Column field="description" :sortable="true" style="width: 25%">
         <template #header>
-          <span aria-label="Description Column Header">
-            Description
-          </span>
+          <span aria-label="Description Column Header"> Description </span>
         </template>
 
         <template #body="{ data }">
@@ -133,43 +132,39 @@
         </template>
       </Column>
 
-      <Column style="min-width: 10rem">
+      <Column class="action-button" style="min-width: 10rem">
         <template #header>
-          <span aria-label="Actions Column Header">
-            Actions
-          </span>
+          <span aria-label="Actions Column Header"> Actions </span>
         </template>
 
         <template #body="{ data }">
-          <div class="action-button">
-            <Button
-              class="p-button-rounded"
-              icon="pi pi-pencil"
-              v-tooltip.bottom="'Update produtc'"
-              @click="updateProduct(data)"
-            />
-            <Button
-              v-if="isActive"
-              class="p-button-rounded p-button-secondary"
-              icon="pi pi-eye-slash"
-              v-tooltip.bottom="'Inactive produtc'"
-              @click="inactiveProduct(data)"
-            />
-            <Button
-              v-else
-              class="p-button-rounded p-button-secondary"
-              icon="pi pi-eye"
-              v-tooltip.bottom="'Active produtc'"
-              @click="activeProduct(data)"
-            />
-            <Button
-              v-if="!isActive"
-              class="p-button-rounded p-button-danger"
-              icon="pi pi-trash"
-              v-tooltip.bottom="'Delete product'"
-              @click="deleteProduct(data)"
-            />
-          </div>
+          <Button
+            class="p-button-rounded"
+            icon="pi pi-pencil"
+            v-tooltip.bottom="'Update produtc'"
+            @click="updateProduct(data)"
+          />
+          <Button
+            v-if="isActive"
+            class="p-button-rounded p-button-secondary"
+            icon="pi pi-eye-slash"
+            v-tooltip.bottom="'Inactive produtc'"
+            @click="inactiveProduct(data)"
+          />
+          <Button
+            v-else
+            class="p-button-rounded p-button-secondary"
+            icon="pi pi-eye"
+            v-tooltip.bottom="'Active produtc'"
+            @click="activeProduct(data)"
+          />
+          <Button
+            v-if="!isActive"
+            class="p-button-rounded p-button-danger"
+            icon="pi pi-trash"
+            v-tooltip.bottom="'Delete product'"
+            @click="deleteProduct(data)"
+          />
         </template>
       </Column>
     </DataTable>
