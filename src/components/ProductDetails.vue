@@ -1,35 +1,38 @@
 <template>
   <div class="product-details">
     <Toast />
-    <Card style="width: 25rem; margin-bottom: 2em">
+    <Card class="card">
       <template #title> Product Details </template>
       <template #content>
         <div class="p-card-content">
           <p>
-          ID: <strong>{{ product.id }}</strong>
-        </p>
-        <p>
-          Name: <strong>{{ product.name }}</strong>
-        </p>
-        <p>
-          Description: <strong>{{ product.description }}</strong>
-        </p>
-        <p>
-          Price: <strong>R$ {{ product.price }}</strong>
-        </p>
-        <p>
-          Created Date: <strong>{{ product.createdDate }}</strong>
-        </p>
-        <p>
-          Updated Date: <strong>{{ product.updatedDate }}</strong>
-        </p>
+            ID: <strong>{{ product.id }}</strong>
+          </p>
+          <p>
+            Name: <strong>{{ product.name }}</strong>
+          </p>
+          <p>
+            Description: <strong>{{ product.description }}</strong>
+          </p>
+          <p>
+            Price: <strong>R$ {{ product.price }}</strong>
+          </p>
+          <p>
+            Active: <strong>{{ isActive }}</strong>
+          </p>
+          <p>
+            Created Date: <strong>{{ product.createdDate }}</strong>
+          </p>
+          <p>
+            Updated Date: <strong>{{ product.updatedDate }}</strong>
+          </p>
         </div>
       </template>
       <template #footer>
         <div class="p-card-footer">
-          <RouterLink to="/" style="text-decoration: none">
-          <Button class="p-button p-button-raised" label="Back" />
-        </RouterLink>
+          <RouterLink class="link" to="/">
+            <Button class="p-button p-button-raised" label="Back" />
+          </RouterLink>
         </div>
       </template>
     </Card>
@@ -43,12 +46,15 @@ export default {
   name: 'ProductDetails',
   props: {
     id: {
-      type: Number
+      type: String
     }
   },
   computed: {
     product() {
       return this.$store.state.product;
+    },
+    isActive() {
+      return this.product.isActive ? 'Yes' : 'No';
     }
   },
   async mounted() {
@@ -60,7 +66,7 @@ export default {
         const response = await getProductById(id);
         this.$store.state.product = { ...response.data.data };
       } catch (error) {
-        this.$tost.add({
+        this.$toast.add({
           severity: 'error',
           detail: `${error.response.data.errors}`,
           life: 2000

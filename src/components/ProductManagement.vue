@@ -5,7 +5,6 @@
     <Toast />
 
     <ProductsTable
-      @search-by-id="requestGetProductById"
       @delete-product="showConfirmDeleteProductDialog"
       @update-product="showUpdateProductDialog"
       @change-products-active-inactive="changeProductsActiveInactive"
@@ -102,7 +101,6 @@ import Header from './Header.vue';
 import ProductsTable from './ProductsTable.vue';
 import {
   getAllProducts,
-  getProductById,
   postProduct,
   deleteProduct,
   putProduct,
@@ -143,26 +141,21 @@ export default {
         const response = await getAllProducts(this.isActive);
         let data = [...response.data.data];
         this.setProducts(data);
+        this.clearFieldsProduct();
       } catch (error) {
         this.setProducts([]);
         this.notification('error', `${error.response.data.errors}`);
       }
     },
-    async requestGetProductById(productId) {
-      try {
-        const response = await getProductById(productId);
-        let data = { ...response.data.data };
-        let product = [];
-        product.push(data);
-        this.setProducts(product);
-      } catch (error) {
-        this.notification('error', `${error.response.data.errors}`);
-      }
-    },
     async requestPostProduct(product) {
       try {
-        await postProduct(product);
-        this.constructProduct('', '', null);
+        let productModified = {
+          name: product.name,
+          description: product.description,
+          price: product.price
+        };
+        await postProduct(productModified);
+        this.clearFieldsProduct();
         this.notification('success', `${product.name} added!`);
         this.requestGetAllProducts();
       } catch (error) {
@@ -182,9 +175,12 @@ export default {
     async requestPutProduct(product) {
       this.hideUpdateProductDialog();
       try {
-        this.buildProduct(product.name, product.description, product.price);
-        await putProduct(product.id, this.product);
-        this.buildProduct('', '', null);
+        let productModified = {
+          name: product.name,
+          description: product.description,
+          price: product.price
+        };
+        await putProduct(product.id, productModified);
         this.requestGetAllProducts(this.isActive);
         this.notification('info', `${product.name} updated!`);
       } catch (error) {
@@ -213,8 +209,8 @@ export default {
       this.isActive = option;
       this.requestGetAllProducts(option);
     },
-    buildProduct(name, description, price) {
-      this.$store.state.product = { name, description, price };
+    clearFieldsProduct() {
+      this.$store.state.product = {};
     },
     notification(severity, detail) {
       this.$toast.add({ severity, detail, life: 2000 });

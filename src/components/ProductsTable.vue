@@ -3,6 +3,7 @@
     <DataTable
       :value="products"
       v-model:filters="filters"
+      :globalFilterFields="['id','name','description','price']"
       filterDisplay="menu"
       removableSort
       showGridlines
@@ -27,20 +28,13 @@
           </div>
           <div class="header-table-search">
             <div class="p-float-label">
-              <InputNumber
-                v-model="searchId"
+              <InputText
+                v-model="filters['global'].value"
                 id="search-by-id"
-                v-tooltip.bottom="'Search product by id'"
+                v-tooltip.bottom="'Search product...'"
               />
-              <label for="search-by-id">Search product by id</label>
+              <label for="search-by-id">Search product...</label>
             </div>
-            <Button
-              class="ml-2 p-button-success"
-              icon="pi pi-search"
-              @click="searchById(searchId)"
-              :disabled="searchButtonEnable"
-              v-tooltip.bottom="'Search product'"
-            />
           </div>
         </div>
       </template>
@@ -207,16 +201,12 @@ export default {
           constraints: [{ value: null, matchMode: FilterMatchMode.CONTAINS }]
         }
       },
-      searchId: null
     };
   },
   computed: {
     products() {
       return this.$store.state.products.products;
     },
-    searchButtonEnable() {
-      return this.searchId ? false : true;
-    }
   },
   methods: {
     deleteProduct(product) {
@@ -224,10 +214,6 @@ export default {
     },
     updateProduct(product) {
       this.$emit('update-product', product);
-    },
-    searchById(id) {
-      this.searchId = null;
-      this.$emit('search-by-id', id);
     },
     changeProductsActiveInactive() {
       this.$emit('change-products-active-inactive', this.isActive);
