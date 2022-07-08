@@ -137,11 +137,11 @@ export default {
   methods: {
     ...mapActions('products', ['setProducts']),
     async requestGetAllProducts() {
+      this.clearFieldsProduct();
       try {
         const response = await getAllProducts(this.isActive);
         let data = [...response.data.data];
         this.setProducts(data);
-        this.clearFieldsProduct();
       } catch (error) {
         this.setProducts([]);
         this.notification('error', `${error.response.data.errors}`);
@@ -155,7 +155,6 @@ export default {
           price: product.price
         };
         await postProduct(productModified);
-        this.clearFieldsProduct();
         this.notification('success', `${product.name} added!`);
         this.requestGetAllProducts();
       } catch (error) {

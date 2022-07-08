@@ -33,7 +33,7 @@
                 id="search-by-id"
                 v-tooltip.bottom="'Search product...'"
               />
-              <label for="search-by-id">Search product...</label>
+              <label class="pi pi-search" for="search-by-id"> Search product...</label>
             </div>
           </div>
         </div>
