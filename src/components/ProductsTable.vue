@@ -52,10 +52,12 @@
 
         <template #body="{ data }">
           <RouterLink
+            class="link"
             :to="`/products/${data.id}/details`"
             v-tooltip.right="'Access product details'"
-            >{{ data.id }}</RouterLink
           >
+            <Button class="p-button-raised p-button-rounded p-button-secondary p-button-text" :label="`${data.id}`" />
+          </RouterLink>
         </template>
 
         <template #filter="{ filterModel }">

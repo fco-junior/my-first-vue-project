@@ -4,7 +4,8 @@
     <Card style="width: 25rem; margin-bottom: 2em">
       <template #title> Product Details </template>
       <template #content>
-        <p>
+        <div class="p-card-content">
+          <p>
           ID: <strong>{{ product.id }}</strong>
         </p>
         <p>
@@ -22,9 +23,14 @@
         <p>
           Updated Date: <strong>{{ product.updatedDate }}</strong>
         </p>
+        </div>
       </template>
       <template #footer>
-        <RouterLink to="/"> Back </RouterLink>
+        <div class="p-card-footer">
+          <RouterLink to="/" style="text-decoration: none">
+          <Button class="p-button p-button-raised" label="Back" />
+        </RouterLink>
+        </div>
       </template>
     </Card>
   </div>
