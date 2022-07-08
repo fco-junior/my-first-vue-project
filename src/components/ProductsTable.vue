@@ -135,28 +135,28 @@
 
         <template #body="{ data }">
           <Button
-            class="p-button-rounded"
+            class="p-button-raised p-button-rounded"
             icon="pi pi-pencil"
             v-tooltip.bottom="'Update produtc'"
             @click="updateProduct(data)"
           />
           <Button
             v-if="isActive"
-            class="p-button-rounded p-button-secondary"
+            class="p-button-raised p-button-rounded p-button-secondary"
             icon="pi pi-eye-slash"
             v-tooltip.bottom="'Inactive produtc'"
             @click="inactiveProduct(data)"
           />
           <Button
             v-else
-            class="p-button-rounded p-button-secondary"
+            class="p-button-raised p-button-rounded p-button-secondary"
             icon="pi pi-eye"
             v-tooltip.bottom="'Active produtc'"
             @click="activeProduct(data)"
           />
           <Button
             v-if="!isActive"
-            class="p-button-rounded p-button-danger"
+            class="p-button-raised p-button-rounded p-button-danger"
             icon="pi pi-trash"
             v-tooltip.bottom="'Delete product'"
             @click="deleteProduct(data)"

@@ -33,7 +33,7 @@
           <label for="product-price">Product price</label>
         </div>
         <Button
-          class="p-button-rounded p-button-success"
+          class="p-button-raised p-button-rounded p-button-success"
           icon="pi pi-check"
           label="Confirm"
           :disabled="disableConfirmButton"
