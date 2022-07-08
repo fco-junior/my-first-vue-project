@@ -18,8 +18,8 @@ export function deleteProduct(productId) {
   return axios.delete(baseURL + `/${productId}`);
 }
 
-export function putProduct(product) {
-  return axios.put(baseURL + `/${product.id}`, product);
+export function putProduct(productId, product) {
+  return axios.put(baseURL + `/${productId}`, product);
 }
 
 export function pathInactiveProductById(productId) {

@@ -6,7 +6,6 @@
     <template #end>
       <div class="p-float-label">
         <InputText
-          class="input"
           id="product-name"
           v-model.trim="product.name"
           v-tooltip.bottom="'Enter product name'"
@@ -15,7 +14,6 @@
       </div>
       <div class="p-float-label">
         <InputText
-          class="input"
           id="product-description"
           v-model="product.description"
           v-tooltip.bottom="'Enter product description'"
@@ -24,7 +22,6 @@
       </div>
       <div class="p-float-label">
         <InputNumber
-          class="input"
           id="product-price"
           v-model="product.price"
           mode="decimal"

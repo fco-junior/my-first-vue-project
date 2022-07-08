@@ -1,8 +1,6 @@
 <template>
   <div class="product-management">
-    <Header
-      @post-product="requestPostProduct"
-    />
+    <Header @post-product="requestPostProduct" />
 
     <Toast />
 
@@ -121,7 +119,7 @@ export default {
       displayConfirmDeleteProduct: false,
       displayUpdateProduct: false,
       isActive: true,
-      productModified: {},
+      productModified: {}
     };
   },
   computed: {
@@ -144,9 +142,9 @@ export default {
       try {
         const response = await getAllProducts(this.isActive);
         let data = [...response.data.data];
-        this.loadProducts(data);
+        this.setProducts(data);
       } catch (error) {
-        this.products = [];
+        this.setProducts([]);
         this.notification('error', `${error.response.data.errors}`);
       }
     },
@@ -156,7 +154,7 @@ export default {
         let data = { ...response.data.data };
         let product = [];
         product.push(data);
-        this.loadProducts(product);
+        this.setProducts(product);
       } catch (error) {
         this.notification('error', `${error.response.data.errors}`);
       }
@@ -164,7 +162,7 @@ export default {
     async requestPostProduct(product) {
       try {
         await postProduct(product);
-        this.clearProductVModel();
+        this.constructProduct('', '', null);
         this.notification('success', `${product.name} added!`);
         this.requestGetAllProducts();
       } catch (error) {
@@ -184,7 +182,9 @@ export default {
     async requestPutProduct(product) {
       this.hideUpdateProductDialog();
       try {
-        await putProduct(product);
+        this.buildProduct(product.name, product.description, product.price);
+        await putProduct(product.id, this.product);
+        this.buildProduct('', '', null);
         this.requestGetAllProducts(this.isActive);
         this.notification('info', `${product.name} updated!`);
       } catch (error) {
@@ -213,8 +213,8 @@ export default {
       this.isActive = option;
       this.requestGetAllProducts(option);
     },
-    clearProductVModel() {
-      this.product = { ...'' };
+    buildProduct(name, description, price) {
+      this.$store.state.product = { name, description, price };
     },
     notification(severity, detail) {
       this.$toast.add({ severity, detail, life: 2000 });

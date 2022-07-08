@@ -12,7 +12,7 @@ export default {
   },
   actions: {
     setProducts({ commit }, payload) {
-      commit('loadProducts', payload);
+      commit('setProducts', payload);
     }
   }
 };
