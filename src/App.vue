@@ -1,16 +1,20 @@
 <template>
   <div id="#app">
-    <BuyList/>
+    <RouterView />
   </div>
 </template>
 
 <script>
-import BuyList from './components/BuyList.vue'
+import ProductManagement from './components/ProductManagement.vue';
 
 export default {
   name: 'App',
   components: {
-    BuyList
+    ProductManagement
   }
-}
+};
 </script>
+
+<style lang="scss">
+  @import './App.scss';
+</style>

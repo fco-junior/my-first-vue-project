@@ -1,0 +1,30 @@
+.product-management {
+  .p-button:focus-visible {
+    outline: 2px solid #f2af00;
+  }
+
+  .p-button-rounded {
+    margin-left: 0.32rem;
+  }
+
+  .p-button-success {
+    background: #269d26;
+  }
+
+  p {
+    width: fit-content;
+
+    &:focus-visible {
+      outline: 2px solid #f2af00;
+    }
+  }
+}
+
+.p-dialog-content {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  height: 8rem;
+  gap: 0.5rem;
+}
