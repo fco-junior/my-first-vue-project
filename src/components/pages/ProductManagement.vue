@@ -9,7 +9,7 @@
       @update-product="showModalUpdateProduct"
       @change-products-active-inactive="changeProductsActiveInactive"
       @inactive-product="showModalInactiveProduct"
-      @active-product="showConfirmActiveProductDialog"
+      @active-product="showModalActiveProduct"
     />
 
     <ModalUpdateProduct
@@ -30,35 +30,11 @@
       @inactive-product="requestPatchInactiveProductById"
     />
 
-    <Dialog
-      v-model:visible="displayConfirmActiveProduct"
-      :style="{ width: '28.125 rem' }"
-      header="Confirm active"
-      :modal="true"
-    >
-      <div class="confirmation-content">
-        <i class="pi pi-exclamation-triangle mr-1" style="font-size: 1.5rem" />
-        <span>
-          Are you sure you want to active {{ productModified.name }}?
-        </span>
-      </div>
-
-      <template #footer>
-        <Button
-          class="p-button-rounded p-button-danger p-button-text"
-          icon="pi pi-times"
-          label="No"
-          @click="hideConfirmActiveProductDialog"
-        />
-
-        <Button
-          class="p-button-rounded p-button-success p-button-text"
-          icon="pi pi-check"
-          label="Yes"
-          @click="requestPatchActiveProductById(productModified)"
-        />
-      </template>
-    </Dialog>
+    <ModalActiveProduct
+      ref="modalActiveProduct"
+      :product="productModified"
+      @active-product="requestPatchActiveProductById"
+    />
   </div>
 </template>
 
@@ -77,6 +53,7 @@ import { mapActions } from 'vuex';
 import ModalUpdateProduct from '../ModalUpdateProduct.vue';
 import ModalDeleteProduct from '../ModalDeleteProduct.vue';
 import ModalInactiveProduct from '../ModalInactiveProduct.vue';
+import ModalActiveProduct from '../ModalActiveProduct.vue';
 
 export default {
   name: 'ProductManagement',
@@ -85,7 +62,8 @@ export default {
     Header,
     ModalUpdateProduct,
     ModalDeleteProduct,
-    ModalInactiveProduct
+    ModalInactiveProduct,
+    ModalActiveProduct
   },
   data() {
     return {
@@ -166,7 +144,6 @@ export default {
       }
     },
     async requestPatchActiveProductById(product) {
-      this.hideConfirmActiveProductDialog();
       try {
         await pathActiveProductById(product.id);
         this.requestGetAllProducts(this.isActive);
@@ -197,12 +174,9 @@ export default {
       this.productModified = { ...product };
       this.$refs.modalInactiveProduct.show();
     },
-    showConfirmActiveProductDialog(product) {
+    showModalActiveProduct(product) {
       this.productModified = { ...product };
-      this.displayConfirmActiveProduct = true;
-    },
-    hideConfirmActiveProductDialog() {
-      this.displayConfirmActiveProduct = false;
+      this.$refs.modalActiveProduct.show();
     }
   }
 };

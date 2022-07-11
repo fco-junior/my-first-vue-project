@@ -14,10 +14,16 @@
       @delete-product="deleteProduct"
     />
 
-    <ModalInactiveProduct 
+    <ModalInactiveProduct
       ref="modalInactiveProduct"
       :product="productModified"
       @inactive-product="inactiveProduct"
+    />
+
+    <ModalActiveProduct
+      ref="modalActiveProduct"
+      :product="productModified"
+      @active-product="activeProduct"
     />
 
     <Card>
@@ -77,6 +83,7 @@
             class="p-button-rounded p-button-raised p-button-secondary"
             icon="pi pi-eye"
             v-tooltip.bottom="'Active product'"
+            @click="showModalActiveProduct"
           />
 
           <Button
@@ -97,15 +104,22 @@ import {
   getProductById,
   putProduct,
   deleteProduct,
-  pathInactiveProductById
+  pathInactiveProductById,
+  pathActiveProductById
 } from '../../services/productService';
 import ModalUpdateProduct from '../ModalUpdateProduct.vue';
 import ModalDeleteProduct from '../ModalDeleteProduct.vue';
 import ModalInactiveProduct from '../ModalInactiveProduct.vue';
+import ModalActiveProduct from '../ModalActiveProduct.vue';
 
 export default {
   name: 'ProductDetails',
-  components: { ModalUpdateProduct, ModalDeleteProduct, ModalInactiveProduct },
+  components: {
+    ModalUpdateProduct,
+    ModalDeleteProduct,
+    ModalInactiveProduct,
+    ModalActiveProduct
+  },
   props: {
     id: {
       type: String
@@ -141,6 +155,10 @@ export default {
       this.productModified = { ...this.product };
       this.$refs.modalInactiveProduct.show();
     },
+    showModalActiveProduct() {
+      this.productModified = { ...this.product };
+      this.$refs.modalActiveProduct.show();
+    },
     async updateProduct(event) {
       let product = {
         name: event.name,
@@ -154,6 +172,9 @@ export default {
     },
     async inactiveProduct(event) {
       await this.requestPatchInactiveProductById(event);
+    },
+    async activeProduct(event) {
+      await this.requestPatchActiveProductById(event);
     },
     async requestGetProductById(id) {
       try {
@@ -188,6 +209,15 @@ export default {
         await pathInactiveProductById(product.id);
         this.requestGetProductById(product.id);
         this.notification('info', `${product.name} inactivated!`);
+      } catch (error) {
+        this.notification('error', `${error.response.data.errors}`);
+      }
+    },
+    async requestPatchActiveProductById(product) {
+      try {
+        await pathActiveProductById(product.id);
+        this.requestGetProductById(product.id);
+        this.notification('info', `${product.name} activated!`);
       } catch (error) {
         this.notification('error', `${error.response.data.errors}`);
       }
