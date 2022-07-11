@@ -3,7 +3,7 @@
     <DataTable
       :value="products"
       v-model:filters="filters"
-      :globalFilterFields="['id','name','description','price']"
+      :globalFilterFields="['id', 'name', 'description', 'price']"
       filterDisplay="menu"
       removableSort
       showGridlines
@@ -15,15 +15,19 @@
       <template #header>
         <div class="flex justify-content-between align-items-center">
           <div class="header-table">
-            <h3>Products</h3>
-            <Dropdown
-              class="dropdown"
-              v-model="isActive"
-              :options="activeOptions"
-              optionLabel="name"
-              optionValue="value"
-              placeholder="active or inactive"
-              @change="changeProductsActiveInactive"
+            <h3>Product Management</h3>
+            <Button
+              v-if="isActive"
+              class="p-button-rounded p-button-raised p-button-secondary p-button-sm"
+              label="View Inactives"
+              @click="changeProductsActiveInactive(false)"
+            />
+
+            <Button
+              v-else
+              class="p-button-rounded p-button-raised p-button-secondary p-button-sm"
+              label="View Actives"
+              @click="changeProductsActiveInactive(true)"
             />
           </div>
           <div class="header-table-search">
@@ -33,7 +37,9 @@
                 id="search-by-id"
                 v-tooltip.bottom="'Search product...'"
               />
-              <label class="pi pi-search" for="search-by-id"> Search product...</label>
+              <label class="pi pi-search" for="search-by-id">
+                Search product...</label
+              >
             </div>
           </div>
         </div>
@@ -50,7 +56,10 @@
             :to="`/products/${data.id}/details`"
             v-tooltip.right="'Access product details'"
           >
-            <Button class="p-button-raised p-button-rounded p-button-secondary p-button-text" :label="`${data.id}`" />
+            <Button
+              class="p-button-raised p-button-rounded p-button-secondary p-button-text"
+              :label="`${data.id}`"
+            />
           </RouterLink>
         </template>
 
@@ -174,10 +183,6 @@ export default {
   name: 'ProductTable',
   data() {
     return {
-      activeOptions: [
-        { name: 'active', value: true },
-        { name: 'inactive', value: false }
-      ],
       isActive: true,
       filters: {
         global: {
@@ -200,13 +205,13 @@ export default {
           operator: FilterOperator.AND,
           constraints: [{ value: null, matchMode: FilterMatchMode.CONTAINS }]
         }
-      },
+      }
     };
   },
   computed: {
     products() {
       return this.$store.state.products.products;
-    },
+    }
   },
   methods: {
     deleteProduct(product) {
@@ -215,7 +220,8 @@ export default {
     updateProduct(product) {
       this.$emit('update-product', product);
     },
-    changeProductsActiveInactive() {
+    changeProductsActiveInactive(value) {
+      this.isActive = value;
       this.$emit('change-products-active-inactive', this.isActive);
     },
     inactiveProduct(product) {
