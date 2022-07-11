@@ -53,12 +53,12 @@ export default {
       return this.$store.state.product;
     },
     disableConfirmButton() {
-      return !this.product.name || !this.product.description || !this.product.price;
+      return ( !this.product.name || !this.product.description || !this.product.price );
     }
   },
   methods: {
     saveProduct(product) {
-      this.$emit('post-product', product);
+      this.$emit('save-product', product);
     }
   }
 };

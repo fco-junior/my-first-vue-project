@@ -1,6 +1,6 @@
 <template>
   <div class="product-management">
-    <Header @post-product="requestPostProduct" />
+    <Header @save-product="saveProduct" />
 
     <Toast />
 
@@ -15,25 +15,25 @@
     <ModalUpdateProduct
       ref="modalUpdateProduct"
       :product="productModified"
-      @update-product="requestPutProduct"
+      @update-product="updateProduct"
     />
 
     <ModalDeleteProduct
       ref="modalDeleteProduct"
       :product="productModified"
-      @delete-product="requestDeleteProduct"
+      @delete-product="deleteProduct"
     />
 
     <ModalInactiveProduct
       ref="modalInactiveProduct"
       :product="productModified"
-      @inactive-product="requestPatchInactiveProductById"
+      @inactive-product="inactiveProduct"
     />
 
     <ModalActiveProduct
       ref="modalActiveProduct"
       :product="productModified"
-      @active-product="requestPatchActiveProductById"
+      @active-product="activeProduct"
     />
   </div>
 </template>
@@ -86,6 +86,31 @@ export default {
   },
   methods: {
     ...mapActions('products', ['setProducts']),
+    async saveProduct(event) {
+      let product = {
+        name: event.name,
+        description: event.description,
+        price: event.price
+      };
+      await this.requestPostProduct(product);
+    },
+    async deleteProduct(event) {
+      await this.requestDeleteProduct(event);
+    },
+    async updateProduct(event) {
+      let product = {
+        name: event.name,
+        description: event.description,
+        price: event.price
+      };
+      await this.requestPutProduct(event.id, product);
+    },
+    async inactiveProduct(event) {
+      await this.requestPatchInactiveProductById(event);
+    },
+    async activeProduct(event) {
+      await this.requestPatchActiveProductById(event);
+    },
     async requestGetAllProducts() {
       this.clearFieldsProduct();
       try {
@@ -99,12 +124,7 @@ export default {
     },
     async requestPostProduct(product) {
       try {
-        let productModified = {
-          name: product.name,
-          description: product.description,
-          price: product.price
-        };
-        await postProduct(productModified);
+        await postProduct(product);
         this.notification('success', `${product.name} added!`);
         this.requestGetAllProducts();
       } catch (error) {
@@ -120,14 +140,9 @@ export default {
         this.notification('error', `${error.response.data.errors}`);
       }
     },
-    async requestPutProduct(product) {
+    async requestPutProduct(id, product) {
       try {
-        let productModified = {
-          name: product.name,
-          description: product.description,
-          price: product.price
-        };
-        await putProduct(product.id, productModified);
+        await putProduct(id, product);
         this.requestGetAllProducts(this.isActive);
         this.notification('info', `${product.name} updated!`);
       } catch (error) {
