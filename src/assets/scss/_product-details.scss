@@ -1,25 +1,25 @@
 .product-details {
   display: flex;
   justify-content: center;
-  
+
   .p-card {
-    background-color: #0000000A;
+    background-color: #0000000a;
     color: #000000;
     padding: 1rem;
-    margin-top: 5rem;
+    margin-top: 4rem;
 
     .p-card-title {
       font-size: 2rem;
       margin: 1rem;
     }
-    
+
     .p-card-content {
       display: flex;
       flex-direction: column;
       font-size: 1.5rem;
       margin: 1rem;
     }
-    
+
     .p-card-footer {
       display: flex;
       flex-direction: row;
