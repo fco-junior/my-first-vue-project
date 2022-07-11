@@ -171,7 +171,7 @@
 import { FilterMatchMode, FilterOperator } from 'primevue/api';
 
 export default {
-  name: 'ProductsTable',
+  name: 'ProductTable',
   data() {
     return {
       activeOptions: [

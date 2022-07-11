@@ -1,10 +1,10 @@
 import { createRouter, createWebHistory } from 'vue-router';
-import ProductDetails from '../components/ProductDetails.vue';
-import ProductManagement from '../components/ProductManagement.vue';
+import ProductDetails from '../components/pages/ProductDetails.vue';
+import ProductManagement from '../components/pages/ProductManagement.vue';
 
 const routes = [
   {
-    path: '/',
+    path: '/products',
     component: ProductManagement,
   },
   {
@@ -14,7 +14,7 @@ const routes = [
   },
   {
     path: '/:pathMatch(.*)*',
-    redirect: '/'
+    redirect: '/products'
   }
 ]
 

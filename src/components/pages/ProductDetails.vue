@@ -40,7 +40,7 @@
 </template>
 
 <script>
-import { getProductById } from '@/services/productsService';
+import { getProductById } from '../../services/productService';
 
 export default {
   name: 'ProductDetails',

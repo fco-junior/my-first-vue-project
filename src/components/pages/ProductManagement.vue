@@ -157,8 +157,8 @@
 </template>
 
 <script>
-import Header from './Header.vue';
-import ProductsTable from './ProductsTable.vue';
+import Header from '../Header.vue';
+import ProductsTable from '../ProductTable.vue';
 import {
   getAllProducts,
   postProduct,
@@ -166,7 +166,7 @@ import {
   putProduct,
   pathInactiveProductById,
   pathActiveProductById
-} from '../services/productsService';
+} from '../../services/productService';
 import { mapActions } from 'vuex';
 
 export default {
