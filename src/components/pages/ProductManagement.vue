@@ -6,63 +6,17 @@
 
     <ProductsTable
       @delete-product="showConfirmDeleteProductDialog"
-      @update-product="showUpdateProductDialog"
+      @update-product="showModalUpdateProduct"
       @change-products-active-inactive="changeProductsActiveInactive"
       @inactive-product="showConfirmInactiveProductDialog"
       @active-product="showConfirmActiveProductDialog"
     />
 
-    <Dialog
-      header="Update product"
-      v-model:visible="displayUpdateProduct"
-      :modal="true"
-    >
-      <div class="p-float-label">
-        <InputText
-          class="input"
-          id="product-name"
-          type="text"
-          v-model.trim="productModified.name"
-        />
-        <label for="product-name">Product name</label>
-      </div>
-
-      <div class="p-float-label">
-        <InputText
-          class="input"
-          id="product-description"
-          type="text"
-          v-model="productModified.description"
-        />
-        <label for="product-description">Product description</label>
-      </div>
-
-      <div class="p-float-label">
-        <InputNumber
-          class="input"
-          id="product-price"
-          v-model="productModified.price"
-        />
-        <label for="product-price">Product price</label>
-      </div>
-
-      <template #footer>
-        <Button
-          class="p-button-rounded p-button-danger p-button-text"
-          icon="pi pi-times"
-          label="Cancel"
-          @click="hideUpdateProductDialog"
-        />
-
-        <Button
-          class="p-button-rounded p-button-text"
-          icon="pi pi-check"
-          label="Update"
-          :disabled="disableUpdateButton"
-          @click="requestPutProduct(productModified)"
-        />
-      </template>
-    </Dialog>
+    <ModalUpdateProduct
+      ref="modalUpdateProduct"
+      :product="productModified"
+      @update-product="requestPutProduct"
+    />
 
     <Dialog
       v-model:visible="displayConfirmDeleteProduct"
@@ -123,7 +77,7 @@
         />
       </template>
     </Dialog>
-    
+
     <Dialog
       v-model:visible="displayConfirmActiveProduct"
       :style="{ width: '28.125 rem' }"
@@ -168,10 +122,11 @@ import {
   pathActiveProductById
 } from '../../services/productService';
 import { mapActions } from 'vuex';
+import ModalUpdateProduct from '../ModalUpdateProduct.vue';
 
 export default {
   name: 'ProductManagement',
-  components: { ProductsTable, Header },
+  components: { ProductsTable, Header, ModalUpdateProduct },
   data() {
     return {
       displayConfirmActiveProduct: false,
@@ -278,12 +233,9 @@ export default {
     notification(severity, detail) {
       this.$toast.add({ severity, detail, life: 2000 });
     },
-    showUpdateProductDialog(product) {
+    showModalUpdateProduct(product) {
       this.productModified = { ...product };
-      this.displayUpdateProduct = true;
-    },
-    hideUpdateProductDialog() {
-      this.displayUpdateProduct = false;
+      this.$refs.modalUpdateProduct.show();
     },
     showConfirmDeleteProductDialog(product) {
       this.productModified = { ...product };

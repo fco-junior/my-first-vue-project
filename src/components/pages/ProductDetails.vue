@@ -1,6 +1,14 @@
 <template>
   <div class="product-details">
     <Toast />
+
+    <ModalUpdateProduct
+      class="p-dialog"
+      ref="modalUpdateProduct"
+      :product="productModified"
+      @update-product="updateProduct"
+    />
+
     <Card>
       <template #title> Product Details </template>
 
@@ -42,6 +50,7 @@
             class="p-button-rounded p-button-raised"
             icon="pi pi-pencil"
             v-tooltip.bottom="'Uptade product'"
+            @click="showModalUpdateProduct"
           />
 
           <Button
@@ -71,19 +80,24 @@
 </template>
 
 <script>
-import { getProductById } from '../../services/productService';
+import { getProductById, putProduct } from '../../services/productService';
+import ModalUpdateProduct from '../ModalUpdateProduct.vue';
 
 export default {
   name: 'ProductDetails',
+  components: { ModalUpdateProduct },
   props: {
     id: {
       type: String
     }
   },
+  data() {
+    return {
+      product: {},
+      productModified: {}
+    };
+  },
   computed: {
-    product() {
-      return this.$store.state.product;
-    },
     isActive() {
       return this.product.isActive ? 'Yes' : 'No';
     }
@@ -92,16 +106,36 @@ export default {
     await this.requestGetProductById(this.id);
   },
   methods: {
+    notification(severity, detail) {
+      this.$toast.add({ severity, detail, life: 2000 });
+    },
+    showModalUpdateProduct() {
+      this.productModified = { ...this.product };
+      this.$refs.modalUpdateProduct.show();
+    },
+    async updateProduct(event) {
+      let product = {
+        name: event.name,
+        description: event.description,
+        price: event.price
+      };
+      await this.requestPutProduct(event.id, product);
+    },
     async requestGetProductById(id) {
       try {
         const response = await getProductById(id);
-        this.$store.state.product = { ...response.data.data };
+        this.product = { ...response.data.data };
       } catch (error) {
-        this.$toast.add({
-          severity: 'error',
-          detail: `${error.response.data.errors}`,
-          life: 2000
-        });
+        this.notification('error', `${error.response.data.errors}`);
+      }
+    },
+    async requestPutProduct(id, product) {
+      try {
+        await putProduct(id, product);
+        this.requestGetProductById(id);
+        this.notification('info', `${product.name} updated!`);
+      } catch (error) {
+        this.notification('error', `${error.response.data.errors}`);
       }
     }
   }
