@@ -182,6 +182,10 @@ export default {
         this.product = { ...response.data.data };
       } catch (error) {
         this.notification('error', `${error.response.data.errors}`);
+        this.notification('info', 'Going to Product Management.');
+        setTimeout(() => {
+          this.$router.push('/products');
+        }, 2000);
       }
     },
     async requestPutProduct(id, product) {
@@ -197,9 +201,10 @@ export default {
       try {
         await deleteProduct(product.id);
         this.notification('success', `${product.name} deleted!`);
+        this.notification('info', 'Going to Product Management.');
         setTimeout(() => {
-          this.$router.push('/');
-        }, 1000);
+          this.$router.push('/products');
+        }, 2000);
       } catch (error) {
         this.notification('error', `${error.response.data.errors}`);
       }
