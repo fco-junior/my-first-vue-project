@@ -14,6 +14,12 @@
       @delete-product="deleteProduct"
     />
 
+    <ModalInactiveProduct 
+      ref="modalInactiveProduct"
+      :product="productModified"
+      @inactive-product="inactiveProduct"
+    />
+
     <Card>
       <template #title> Product Details </template>
 
@@ -63,6 +69,7 @@
             class="p-button-rounded p-button-raised p-button-secondary"
             icon="pi pi-eye-slash"
             v-tooltip.bottom="'Inactive product'"
+            @click="showModalInactiveProduct"
           />
 
           <Button
@@ -89,14 +96,16 @@
 import {
   getProductById,
   putProduct,
-  deleteProduct
+  deleteProduct,
+  pathInactiveProductById
 } from '../../services/productService';
 import ModalUpdateProduct from '../ModalUpdateProduct.vue';
 import ModalDeleteProduct from '../ModalDeleteProduct.vue';
+import ModalInactiveProduct from '../ModalInactiveProduct.vue';
 
 export default {
   name: 'ProductDetails',
-  components: { ModalUpdateProduct, ModalDeleteProduct },
+  components: { ModalUpdateProduct, ModalDeleteProduct, ModalInactiveProduct },
   props: {
     id: {
       type: String
@@ -128,6 +137,10 @@ export default {
       this.productModified = { ...this.product };
       this.$refs.modalDeleteProduct.show();
     },
+    showModalInactiveProduct() {
+      this.productModified = { ...this.product };
+      this.$refs.modalInactiveProduct.show();
+    },
     async updateProduct(event) {
       let product = {
         name: event.name,
@@ -138,6 +151,9 @@ export default {
     },
     async deleteProduct(event) {
       await this.requestDeleteProduct(event);
+    },
+    async inactiveProduct(event) {
+      await this.requestPatchInactiveProductById(event);
     },
     async requestGetProductById(id) {
       try {
@@ -163,6 +179,15 @@ export default {
         setTimeout(() => {
           this.$router.push('/');
         }, 1000);
+      } catch (error) {
+        this.notification('error', `${error.response.data.errors}`);
+      }
+    },
+    async requestPatchInactiveProductById(product) {
+      try {
+        await pathInactiveProductById(product.id);
+        this.requestGetProductById(product.id);
+        this.notification('info', `${product.name} inactivated!`);
       } catch (error) {
         this.notification('error', `${error.response.data.errors}`);
       }

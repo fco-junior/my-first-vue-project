@@ -8,7 +8,7 @@
       @delete-product="showModalDeleteProduct"
       @update-product="showModalUpdateProduct"
       @change-products-active-inactive="changeProductsActiveInactive"
-      @inactive-product="showConfirmInactiveProductDialog"
+      @inactive-product="showModalInactiveProduct"
       @active-product="showConfirmActiveProductDialog"
     />
 
@@ -24,35 +24,11 @@
       @delete-product="requestDeleteProduct"
     />
 
-    <Dialog
-      v-model:visible="displayConfirmInactiveProduct"
-      :style="{ width: '28.125 rem' }"
-      header="Confirm inactive"
-      :modal="true"
-    >
-      <div class="confirmation-content">
-        <i class="pi pi-exclamation-triangle mr-1" style="font-size: 1.5rem" />
-        <span>
-          Are you sure you want to inactive {{ productModified.name }}?
-        </span>
-      </div>
-
-      <template #footer>
-        <Button
-          class="p-button-rounded p-button-danger p-button-text"
-          icon="pi pi-times"
-          label="No"
-          @click="hideConfirmInactiveProductDialog"
-        />
-
-        <Button
-          class="p-button-rounded p-button-success p-button-text"
-          icon="pi pi-check"
-          label="Yes"
-          @click="requestPatchInactiveProductById(productModified)"
-        />
-      </template>
-    </Dialog>
+    <ModalInactiveProduct
+      ref="modalInactiveProduct"
+      :product="productModified"
+      @inactive-product="requestPatchInactiveProductById"
+    />
 
     <Dialog
       v-model:visible="displayConfirmActiveProduct"
@@ -100,6 +76,7 @@ import {
 import { mapActions } from 'vuex';
 import ModalUpdateProduct from '../ModalUpdateProduct.vue';
 import ModalDeleteProduct from '../ModalDeleteProduct.vue';
+import ModalInactiveProduct from '../ModalInactiveProduct.vue';
 
 export default {
   name: 'ProductManagement',
@@ -107,7 +84,8 @@ export default {
     ProductsTable,
     Header,
     ModalUpdateProduct,
-    ModalDeleteProduct
+    ModalDeleteProduct,
+    ModalInactiveProduct
   },
   data() {
     return {
@@ -179,7 +157,6 @@ export default {
       }
     },
     async requestPatchInactiveProductById(product) {
-      this.hideConfirmInactiveProductDialog();
       try {
         await pathInactiveProductById(product.id);
         this.requestGetAllProducts(this.isActive);
@@ -216,12 +193,9 @@ export default {
       this.productModified = { ...product };
       this.$refs.modalDeleteProduct.show();
     },
-    showConfirmInactiveProductDialog(product) {
+    showModalInactiveProduct(product) {
       this.productModified = { ...product };
-      this.displayConfirmInactiveProduct = true;
-    },
-    hideConfirmInactiveProductDialog() {
-      this.displayConfirmInactiveProduct = false;
+      this.$refs.modalInactiveProduct.show();
     },
     showConfirmActiveProductDialog(product) {
       this.productModified = { ...product };
