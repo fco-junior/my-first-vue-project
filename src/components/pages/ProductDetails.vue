@@ -3,10 +3,15 @@
     <Toast />
 
     <ModalUpdateProduct
-      class="p-dialog"
       ref="modalUpdateProduct"
       :product="productModified"
       @update-product="updateProduct"
+    />
+
+    <ModalDeleteProduct
+      ref="modalDeleteProduct"
+      :product="productModified"
+      @delete-product="deleteProduct"
     />
 
     <Card>
@@ -72,6 +77,7 @@
             class="p-button-rounded p-button-raised p-button-danger"
             icon="pi pi-trash"
             v-tooltip.bottom="'Delete product'"
+            @click="showModalDeleteProduct"
           />
         </div>
       </template>
@@ -80,12 +86,17 @@
 </template>
 
 <script>
-import { getProductById, putProduct } from '../../services/productService';
+import {
+  getProductById,
+  putProduct,
+  deleteProduct
+} from '../../services/productService';
 import ModalUpdateProduct from '../ModalUpdateProduct.vue';
+import ModalDeleteProduct from '../ModalDeleteProduct.vue';
 
 export default {
   name: 'ProductDetails',
-  components: { ModalUpdateProduct },
+  components: { ModalUpdateProduct, ModalDeleteProduct },
   props: {
     id: {
       type: String
@@ -113,6 +124,10 @@ export default {
       this.productModified = { ...this.product };
       this.$refs.modalUpdateProduct.show();
     },
+    showModalDeleteProduct() {
+      this.productModified = { ...this.product };
+      this.$refs.modalDeleteProduct.show();
+    },
     async updateProduct(event) {
       let product = {
         name: event.name,
@@ -120,6 +135,9 @@ export default {
         price: event.price
       };
       await this.requestPutProduct(event.id, product);
+    },
+    async deleteProduct(event) {
+      await this.requestDeleteProduct(event);
     },
     async requestGetProductById(id) {
       try {
@@ -134,6 +152,17 @@ export default {
         await putProduct(id, product);
         this.requestGetProductById(id);
         this.notification('info', `${product.name} updated!`);
+      } catch (error) {
+        this.notification('error', `${error.response.data.errors}`);
+      }
+    },
+    async requestDeleteProduct(product) {
+      try {
+        await deleteProduct(product.id);
+        this.notification('success', `${product.name} deleted!`);
+        setTimeout(() => {
+          this.$router.push('/');
+        }, 1000);
       } catch (error) {
         this.notification('error', `${error.response.data.errors}`);
       }

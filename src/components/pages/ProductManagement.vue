@@ -5,7 +5,7 @@
     <Toast />
 
     <ProductsTable
-      @delete-product="showConfirmDeleteProductDialog"
+      @delete-product="showModalDeleteProduct"
       @update-product="showModalUpdateProduct"
       @change-products-active-inactive="changeProductsActiveInactive"
       @inactive-product="showConfirmInactiveProductDialog"
@@ -18,35 +18,11 @@
       @update-product="requestPutProduct"
     />
 
-    <Dialog
-      v-model:visible="displayConfirmDeleteProduct"
-      :style="{ width: '28.125 rem' }"
-      header="Confirm delete"
-      :modal="true"
-    >
-      <div class="confirmation-content">
-        <i class="pi pi-exclamation-triangle mr-1" style="font-size: 1.5rem" />
-        <span>
-          Are you sure you want to delete {{ productModified.name }}?
-        </span>
-      </div>
-
-      <template #footer>
-        <Button
-          class="p-button-rounded p-button-danger p-button-text"
-          icon="pi pi-times"
-          label="No"
-          @click="hideConfirmDeleteProductDialog"
-        />
-
-        <Button
-          class="p-button-rounded p-button-success p-button-text"
-          icon="pi pi-check"
-          label="Yes"
-          @click="requestDeleteProduct(productModified)"
-        />
-      </template>
-    </Dialog>
+    <ModalDeleteProduct
+      ref="modalDeleteProduct"
+      :product="productModified"
+      @delete-product="requestDeleteProduct"
+    />
 
     <Dialog
       v-model:visible="displayConfirmInactiveProduct"
@@ -123,16 +99,20 @@ import {
 } from '../../services/productService';
 import { mapActions } from 'vuex';
 import ModalUpdateProduct from '../ModalUpdateProduct.vue';
+import ModalDeleteProduct from '../ModalDeleteProduct.vue';
 
 export default {
   name: 'ProductManagement',
-  components: { ProductsTable, Header, ModalUpdateProduct },
+  components: {
+    ProductsTable,
+    Header,
+    ModalUpdateProduct,
+    ModalDeleteProduct
+  },
   data() {
     return {
       displayConfirmActiveProduct: false,
       displayConfirmInactiveProduct: false,
-      displayConfirmDeleteProduct: false,
-      displayUpdateProduct: false,
       isActive: true,
       productModified: {}
     };
@@ -143,9 +123,6 @@ export default {
     },
     products() {
       return this.$store.state.products.products;
-    },
-    disableUpdateButton() {
-      return !this.productModified.name || !this.productModified.description;
     }
   },
   async mounted() {
@@ -179,7 +156,6 @@ export default {
       }
     },
     async requestDeleteProduct(product) {
-      this.hideConfirmDeleteProductDialog();
       try {
         await deleteProduct(product.id);
         this.requestGetAllProducts(this.isActive);
@@ -189,7 +165,6 @@ export default {
       }
     },
     async requestPutProduct(product) {
-      this.hideUpdateProductDialog();
       try {
         let productModified = {
           name: product.name,
@@ -237,12 +212,9 @@ export default {
       this.productModified = { ...product };
       this.$refs.modalUpdateProduct.show();
     },
-    showConfirmDeleteProductDialog(product) {
+    showModalDeleteProduct(product) {
       this.productModified = { ...product };
-      this.displayConfirmDeleteProduct = true;
-    },
-    hideConfirmDeleteProductDialog() {
-      this.displayConfirmDeleteProduct = false;
+      this.$refs.modalDeleteProduct.show();
     },
     showConfirmInactiveProductDialog(product) {
       this.productModified = { ...product };
