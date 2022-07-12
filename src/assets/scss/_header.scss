@@ -1,5 +1,30 @@
 .header {
-  .p-float-label {
+  h3:focus-visible {
+    outline: 2px solid #f2af00;
+  }
+
+  .p-inputtext {
     margin-right: 0.5rem;
+
+    &:focus-visible {
+      outline: 2px solid #f2af00;
+      box-shadow: none;
+      border: none;
+    }
+  }
+
+  .p-button:focus-visible {
+    outline: 2px solid #f2af00;
+    box-shadow: none;
+  }
+
+  .p-button-success {
+    background: #269d26;
+  }
+
+  p {
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+    margin-top: 0;
   }
 }
