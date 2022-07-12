@@ -15,37 +15,33 @@
       </template>
 
       <template #header>
-        <div class="flex justify-content-between align-items-center">
-          <div class="header-table">
-            <h3>Product Management</h3>
-            <Button
-              v-if="isActive"
-              class="p-button-rounded p-button-raised p-button-secondary p-button-sm"
-              style="width: 7.5rem"
-              label="View Inactives"
-              @click="changeProductsActiveInactive(false)"
-            />
+        <div class="table-header-left">
+          <h3 tabindex="0">Product Management</h3>
+          <Button
+            v-if="isActive"
+            class="p-button-rounded p-button-raised p-button-secondary p-button-sm"
+            label="View Inactives"
+            @click="changeProductsActiveInactive(false)"
+          />
 
-            <Button
-              v-else
-              class="p-button-rounded p-button-raised p-button-secondary p-button-sm"
-              style="width: 7.5rem"
-              label="View Actives"
-              @click="changeProductsActiveInactive(true)"
-            />
-          </div>
-          <div class="header-table-search">
-            <div class="p-float-label">
-              <InputText
-                v-model="filters['global'].value"
-                id="search-by-id"
-                v-tooltip.bottom="'Search product...'"
-              />
-              <label class="pi pi-search" for="search-by-id">
-                Search product...</label
-              >
-            </div>
-          </div>
+          <Button
+            v-else
+            class="p-button-rounded p-button-raised p-button-secondary p-button-sm"
+            style="width: 7.5rem"
+            label="View Actives"
+            @click="changeProductsActiveInactive(true)"
+          />
+        </div>
+
+        <div class="p-float-label">
+          <InputText
+            id="search-by-id"
+            v-model="filters['global'].value"
+            v-tooltip.bottom="'Search product...'"
+          />
+          <label class="pi pi-search" for="search-by-id">
+            Search product...
+          </label>
         </div>
       </template>
 
