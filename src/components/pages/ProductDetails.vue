@@ -57,23 +57,29 @@
         <RouterLink class="link" to="/">
           <Button
             class="p-button-rounded p-button-raised p-button-success"
-            icon="pi pi-table"
-            v-tooltip.bottom="'Go to Product Management'"
+            icon="pi pi-arrow-left"
+            style="width: 7rem"
+            label="Back"
+            v-tooltip.bottom="'Back to Product Management'"
           />
         </RouterLink>
 
         <div class="action-buttons">
           <Button
             class="p-button-rounded p-button-raised"
+            style="width: 7rem"
             icon="pi pi-pencil"
-            v-tooltip.bottom="'Uptade product'"
+            label="Edit"
+            v-tooltip.bottom="'Edit product'"
             @click="showModalUpdateProduct"
           />
 
           <Button
             v-show="isActive === 'Yes'"
             class="p-button-rounded p-button-raised p-button-secondary"
+            style="width: 7rem"
             icon="pi pi-eye-slash"
+            label="Inactive"
             v-tooltip.bottom="'Inactive product'"
             @click="showModalInactiveProduct"
           />
@@ -81,7 +87,9 @@
           <Button
             v-show="isActive === 'No'"
             class="p-button-rounded p-button-raised p-button-secondary"
+            style="width: 7rem"
             icon="pi pi-eye"
+            label="Active"
             v-tooltip.bottom="'Active product'"
             @click="showModalActiveProduct"
           />
@@ -89,7 +97,9 @@
           <Button
             v-show="isActive === 'No'"
             class="p-button-rounded p-button-raised p-button-danger"
+            style="width: 7rem"
             icon="pi pi-trash"
+            label="Delete"
             v-tooltip.bottom="'Delete product'"
             @click="showModalDeleteProduct"
           />

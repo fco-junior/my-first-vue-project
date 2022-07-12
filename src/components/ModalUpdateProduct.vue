@@ -1,7 +1,7 @@
 <template>
   <Dialog v-model:visible="display" :modal="true">
     <template #header>
-      <h3>Update product</h3>
+      <h3>Edit product</h3>
     </template>
 
     <div class="content">
@@ -29,14 +29,14 @@
 
     <template #footer>
       <Button
-        class="p-button-rounded p-button-danger p-button-text"
+        class="p-button-rounded p-button-danger p-button-text p-button-raised"
         icon="pi pi-times"
         label="Cancel"
         @click="close"
       />
 
       <Button
-        class="p-button-rounded p-button-text"
+        class="p-button-rounded p-button-text p-button-raised"
         icon="pi pi-check"
         label="Update"
         :disabled="disableUpdateButton"

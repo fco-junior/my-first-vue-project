@@ -10,7 +10,9 @@
       :scrollable="true"
       scrollHeight="25rem"
     >
-      <template #empty> No products</template>
+      <template #empty>
+        <span>No products found</span>
+      </template>
 
       <template #header>
         <div class="flex justify-content-between align-items-center">
@@ -19,6 +21,7 @@
             <Button
               v-if="isActive"
               class="p-button-rounded p-button-raised p-button-secondary p-button-sm"
+              style="width: 7.5rem"
               label="View Inactives"
               @click="changeProductsActiveInactive(false)"
             />
@@ -26,6 +29,7 @@
             <Button
               v-else
               class="p-button-rounded p-button-raised p-button-secondary p-button-sm"
+              style="width: 7.5rem"
               label="View Actives"
               @click="changeProductsActiveInactive(true)"
             />
@@ -45,7 +49,7 @@
         </div>
       </template>
 
-      <Column field="id" :sortable="true" style="width: 25%">
+      <Column field="id" :sortable="true" style="width: 20%">
         <template #header>
           <span :aria-label="`ID Column Header`"> ID </span>
         </template>
@@ -72,7 +76,7 @@
         </template>
       </Column>
 
-      <Column field="name" :sortable="true" style="width: 25%">
+      <Column field="name" :sortable="true" style="width: 20%">
         <template #header>
           <span aria-label="Name Column Header"> Name </span>
         </template>
@@ -93,7 +97,7 @@
         </template>
       </Column>
 
-      <Column field="description" :sortable="true" style="width: 25%">
+      <Column field="description" :sortable="true" style="width: 20%">
         <template #header>
           <span aria-label="Description Column Header"> Description </span>
         </template>
@@ -117,7 +121,7 @@
         </template>
       </Column>
 
-      <Column field="price" :sortable="true" style="width: 25%">
+      <Column field="price" :sortable="true" style="width: 20%">
         <template #header>
           <span aria-label="Price Column Header"> Price </span>
         </template>
@@ -137,7 +141,7 @@
         </template>
       </Column>
 
-      <Column class="action-button" style="min-width: 10rem">
+      <Column class="action-button" style="min-width: 20%">
         <template #header>
           <span aria-label="Actions Column Header"> Actions </span>
         </template>

@@ -6,19 +6,19 @@
     
     <div class="confirmation-content">
       <i class="pi pi-exclamation-triangle mr-1" style="font-size: 1.5rem" />
-      <span> Are you sure you want to delete {{ product.name }}? </span>
+      <span> Are you sure you want to <b>delete {{ product.name }}</b>? </span>
     </div>
 
     <template #footer>
       <Button
-        class="p-button-rounded p-button-danger p-button-text"
+        class="p-button-rounded p-button-danger p-button-text p-button-raised"
         icon="pi pi-times"
         label="No"
         @click="close"
       />
 
       <Button
-        class="p-button-rounded p-button-success p-button-text"
+        class="p-button-rounded p-button-success p-button-text p-button-raised"
         icon="pi pi-check"
         label="Yes"
         @click="deleteProduct(product)"
