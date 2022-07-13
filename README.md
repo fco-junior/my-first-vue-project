@@ -1,4 +1,6 @@
-# my-first-vue-project
+# Product Management Front-End
+
+# API from https://github.com/rogerioSilva60/test-project-spring
 
 ## Project setup
 ```
