@@ -33,7 +33,7 @@
           <label for="product-price">Product price</label>
         </div>
         <Button
-          class="p-button-rounded p-button-success"
+          class="p-button-raised p-button-rounded p-button-success"
           icon="pi pi-check"
           label="Confirm"
           :disabled="disableConfirmButton"
@@ -53,12 +53,12 @@ export default {
       return this.$store.state.product;
     },
     disableConfirmButton() {
-      return !this.product.name || !this.product.description || !this.product.price;
+      return ( !this.product.name || !this.product.description || !this.product.price );
     }
   },
   methods: {
     saveProduct(product) {
-      this.$emit('post-product', product);
+      this.$emit('save-product', product);
     }
   }
 };

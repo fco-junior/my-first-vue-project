@@ -5,13 +5,8 @@
 </template>
 
 <script>
-import ProductManagement from './components/ProductManagement.vue';
-
 export default {
-  name: 'App',
-  components: {
-    ProductManagement
-  }
+  name: 'App'
 };
 </script>
 

@@ -3,27 +3,35 @@
     <DataTable
       :value="products"
       v-model:filters="filters"
-      :globalFilterFields="['id','name','description','price']"
+      :globalFilterFields="['id', 'name', 'description', 'price']"
       filterDisplay="menu"
       removableSort
       showGridlines
       :scrollable="true"
       scrollHeight="25rem"
     >
-      <template #empty> No products</template>
+      <template #empty>
+        <span>No products found</span>
+      </template>
 
       <template #header>
         <div class="flex justify-content-between align-items-center">
           <div class="header-table">
-            <h3>Products</h3>
-            <Dropdown
-              class="dropdown"
-              v-model="isActive"
-              :options="activeOptions"
-              optionLabel="name"
-              optionValue="value"
-              placeholder="active or inactive"
-              @change="changeProductsActiveInactive"
+            <h3>Product Management</h3>
+            <Button
+              v-if="isActive"
+              class="p-button-rounded p-button-raised p-button-secondary p-button-sm"
+              style="width: 7.5rem"
+              label="View Inactives"
+              @click="changeProductsActiveInactive(false)"
+            />
+
+            <Button
+              v-else
+              class="p-button-rounded p-button-raised p-button-secondary p-button-sm"
+              style="width: 7.5rem"
+              label="View Actives"
+              @click="changeProductsActiveInactive(true)"
             />
           </div>
           <div class="header-table-search">
@@ -33,13 +41,15 @@
                 id="search-by-id"
                 v-tooltip.bottom="'Search product...'"
               />
-              <label class="pi pi-search" for="search-by-id"> Search product...</label>
+              <label class="pi pi-search" for="search-by-id">
+                Search product...</label
+              >
             </div>
           </div>
         </div>
       </template>
 
-      <Column field="id" :sortable="true" style="width: 25%">
+      <Column field="id" :sortable="true" style="width: 20%">
         <template #header>
           <span :aria-label="`ID Column Header`"> ID </span>
         </template>
@@ -50,7 +60,10 @@
             :to="`/products/${data.id}/details`"
             v-tooltip.right="'Access product details'"
           >
-            <Button class="p-button-raised p-button-rounded p-button-secondary p-button-text" :label="`${data.id}`" />
+            <Button
+              class="p-button-raised p-button-rounded p-button-secondary p-button-text"
+              :label="`${data.id}`"
+            />
           </RouterLink>
         </template>
 
@@ -63,7 +76,7 @@
         </template>
       </Column>
 
-      <Column field="name" :sortable="true" style="width: 25%">
+      <Column field="name" :sortable="true" style="width: 20%">
         <template #header>
           <span aria-label="Name Column Header"> Name </span>
         </template>
@@ -84,7 +97,7 @@
         </template>
       </Column>
 
-      <Column field="description" :sortable="true" style="width: 25%">
+      <Column field="description" :sortable="true" style="width: 20%">
         <template #header>
           <span aria-label="Description Column Header"> Description </span>
         </template>
@@ -108,7 +121,7 @@
         </template>
       </Column>
 
-      <Column field="price" :sortable="true" style="width: 25%">
+      <Column field="price" :sortable="true" style="width: 20%">
         <template #header>
           <span aria-label="Price Column Header"> Price </span>
         </template>
@@ -128,35 +141,35 @@
         </template>
       </Column>
 
-      <Column class="action-button" style="min-width: 10rem">
+      <Column class="action-button" style="min-width: 20%">
         <template #header>
           <span aria-label="Actions Column Header"> Actions </span>
         </template>
 
         <template #body="{ data }">
           <Button
-            class="p-button-rounded"
+            class="p-button-raised p-button-rounded"
             icon="pi pi-pencil"
             v-tooltip.bottom="'Update produtc'"
             @click="updateProduct(data)"
           />
           <Button
             v-if="isActive"
-            class="p-button-rounded p-button-secondary"
+            class="p-button-raised p-button-rounded p-button-secondary"
             icon="pi pi-eye-slash"
             v-tooltip.bottom="'Inactive produtc'"
             @click="inactiveProduct(data)"
           />
           <Button
             v-else
-            class="p-button-rounded p-button-secondary"
+            class="p-button-raised p-button-rounded p-button-secondary"
             icon="pi pi-eye"
             v-tooltip.bottom="'Active produtc'"
             @click="activeProduct(data)"
           />
           <Button
             v-if="!isActive"
-            class="p-button-rounded p-button-danger"
+            class="p-button-raised p-button-rounded p-button-danger"
             icon="pi pi-trash"
             v-tooltip.bottom="'Delete product'"
             @click="deleteProduct(data)"
@@ -171,13 +184,9 @@
 import { FilterMatchMode, FilterOperator } from 'primevue/api';
 
 export default {
-  name: 'ProductsTable',
+  name: 'ProductTable',
   data() {
     return {
-      activeOptions: [
-        { name: 'active', value: true },
-        { name: 'inactive', value: false }
-      ],
       isActive: true,
       filters: {
         global: {
@@ -200,13 +209,13 @@ export default {
           operator: FilterOperator.AND,
           constraints: [{ value: null, matchMode: FilterMatchMode.CONTAINS }]
         }
-      },
+      }
     };
   },
   computed: {
     products() {
       return this.$store.state.products.products;
-    },
+    }
   },
   methods: {
     deleteProduct(product) {
@@ -215,7 +224,8 @@ export default {
     updateProduct(product) {
       this.$emit('update-product', product);
     },
-    changeProductsActiveInactive() {
+    changeProductsActiveInactive(value) {
+      this.isActive = value;
       this.$emit('change-products-active-inactive', this.isActive);
     },
     inactiveProduct(product) {
