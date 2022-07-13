@@ -2,7 +2,7 @@
   <div class="header">
     <Toolbar class="mb-3">
       <template #start>
-        <h3>New Product</h3>
+        <h3 tabindex="0">New Product</h3>
       </template>
       <template #end>
         <div class="p-float-label">

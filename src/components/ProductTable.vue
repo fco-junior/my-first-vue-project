@@ -8,44 +8,39 @@
       removableSort
       showGridlines
       :scrollable="true"
-      scrollHeight="25rem"
     >
       <template #empty>
-        <span>No products found</span>
+        <span tabindex="0">No products found</span>
       </template>
 
       <template #header>
-        <div class="flex justify-content-between align-items-center">
-          <div class="header-table">
-            <h3>Product Management</h3>
-            <Button
-              v-if="isActive"
-              class="p-button-rounded p-button-raised p-button-secondary p-button-sm"
-              style="width: 7.5rem"
-              label="View Inactives"
-              @click="changeProductsActiveInactive(false)"
-            />
+        <div class="table-header-left">
+          <h3 tabindex="0">Product Management</h3>
+          <Button
+            v-if="isActive"
+            class="p-button-rounded p-button-raised p-button-secondary p-button-sm"
+            label="View Inactives"
+            @click="changeProductsActiveInactive(false)"
+          />
 
-            <Button
-              v-else
-              class="p-button-rounded p-button-raised p-button-secondary p-button-sm"
-              style="width: 7.5rem"
-              label="View Actives"
-              @click="changeProductsActiveInactive(true)"
-            />
-          </div>
-          <div class="header-table-search">
-            <div class="p-float-label">
-              <InputText
-                v-model="filters['global'].value"
-                id="search-by-id"
-                v-tooltip.bottom="'Search product...'"
-              />
-              <label class="pi pi-search" for="search-by-id">
-                Search product...</label
-              >
-            </div>
-          </div>
+          <Button
+            v-else
+            class="p-button-rounded p-button-raised p-button-secondary p-button-sm"
+            style="width: 7.5rem"
+            label="View Actives"
+            @click="changeProductsActiveInactive(true)"
+          />
+        </div>
+
+        <div class="p-float-label">
+          <InputText
+            id="search-by-id"
+            v-model="filters['global'].value"
+            v-tooltip.bottom="'Search product...'"
+          />
+          <label class="pi pi-search" for="search-by-id">
+            Search product...
+          </label>
         </div>
       </template>
 
@@ -56,6 +51,7 @@
 
         <template #body="{ data }">
           <RouterLink
+            tabindex="-1"
             class="link"
             :to="`/products/${data.id}/details`"
             v-tooltip.right="'Access product details'"
@@ -141,9 +137,14 @@
         </template>
       </Column>
 
-      <Column class="action-button" style="min-width: 20%">
+      <Column class="actions" style="min-width: 20% ">
         <template #header>
-          <span aria-label="Actions Column Header"> Actions </span>
+          <span
+            tabindex="0"
+            aria-label="Actions Column Header"
+          >
+            Actions
+          </span>
         </template>
 
         <template #body="{ data }">
