@@ -70,7 +70,24 @@ export default {
       displayConfirmActiveProduct: false,
       displayConfirmInactiveProduct: false,
       isActive: true,
-      productModified: {}
+      productModified: {},
+      initProducts: [
+        {
+          name: 'Bean',
+          description: 'Description',
+          price: 8.5
+        },
+        {
+          name: 'Noodle',
+          description: 'Description',
+          price: 7
+        },
+        {
+          name: 'Rice',
+          description: 'Description',
+          price: 7.5
+        }
+      ]
     };
   },
   computed: {
@@ -83,9 +100,20 @@ export default {
   },
   async mounted() {
     await this.requestGetAllProducts();
+    await this.initializeProducts();
   },
   methods: {
     ...mapActions('products', ['setProducts']),
+    async initializeProducts() {
+      if (!this.products.length) {
+        const response = await getAllProducts(false);
+        let data = [...response.data.data];
+        if (!data.length)
+          await this.initProducts.forEach((product) => {
+            this.saveProduct(product);
+          });
+      }
+    },
     async saveProduct(event) {
       let product = {
         name: event.name,
