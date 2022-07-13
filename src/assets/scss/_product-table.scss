@@ -1,5 +1,4 @@
 .product-table {
-
   .p-datatable-header {
     display: flex;
     justify-content: space-between;
@@ -14,13 +13,13 @@
       h3:focus-visible {
         outline: 2px solid #f2af00;
       }
-      
+
       .p-button:focus-visible {
         outline: 2px solid #f2af00;
         box-shadow: none;
       }
     }
-    
+
     .p-inputtext:focus-visible {
       outline: 2px solid #f2af00;
       box-shadow: none;
@@ -28,34 +27,42 @@
     }
   }
 
-  .header-table {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    gap: 1rem;
-
-    .dropdown {
-      height: fit-content;
-    }
+  .p-sortable-column:focus-visible {
+    box-shadow: inset 0 0 0 2px #f2af00;
   }
 
-  .header-table-search {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    gap: 0.2rem;
+  .p-column-filter-menu-button:focus-visible {
+    outline: 2px solid #f2af00;
+    box-shadow: none;
   }
 
-  .button {
-    color: #495057;
-  }
-
-  .action-button {
+  .actions {
     display: flex;
     justify-content: center;
+
+    &:focus-visible {
+      outline: 2px solid #f2af00;
+    }
   }
 
   .link {
     text-decoration: none;
+  }
+
+  span:focus-visible {
+    outline: 2px solid #f2af00;
+  }
+
+  p:focus-visible {
+    outline: 2px solid #f2af00;
+  }
+
+  .p-button:focus-visible {
+    outline: 2px solid #f2af00;
+
+    &:focus {
+      box-shadow: none;
+      border: none;
+    }
   }
 }

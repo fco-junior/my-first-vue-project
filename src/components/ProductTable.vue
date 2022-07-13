@@ -8,10 +8,9 @@
       removableSort
       showGridlines
       :scrollable="true"
-      scrollHeight="25rem"
     >
       <template #empty>
-        <span>No products found</span>
+        <span tabindex="0">No products found</span>
       </template>
 
       <template #header>
@@ -52,6 +51,7 @@
 
         <template #body="{ data }">
           <RouterLink
+            tabindex="-1"
             class="link"
             :to="`/products/${data.id}/details`"
             v-tooltip.right="'Access product details'"
@@ -137,9 +137,14 @@
         </template>
       </Column>
 
-      <Column class="action-button" style="min-width: 20%">
+      <Column class="actions" style="min-width: 20% ">
         <template #header>
-          <span aria-label="Actions Column Header"> Actions </span>
+          <span
+            tabindex="0"
+            aria-label="Actions Column Header"
+          >
+            Actions
+          </span>
         </template>
 
         <template #body="{ data }">
