@@ -39,6 +39,7 @@
   .actions {
     display: flex;
     justify-content: center;
+    gap: 0.5rem;
 
     &:focus-visible {
       outline: 2px solid #f2af00;
@@ -64,14 +65,15 @@
       box-shadow: none;
       border: none;
     }
-    .p-tabview-panels {
-      padding: 0;
-    }
+  }
 
-    .tabview-custom {
-      span {
-        margin: 0 0.5rem;
-      }
+  .p-tabview-panels {
+    padding: 0;
+  }
+
+  .tabview-custom {
+    span {
+      margin: 0 0.5rem;
     }
   }
 }
