@@ -100,20 +100,9 @@ export default {
   },
   async mounted() {
     await this.requestGetAllProducts();
-    await this.initializeProducts();
   },
   methods: {
     ...mapActions('products', ['setProducts']),
-    async initializeProducts() {
-      if (!this.products.length) {
-        const response = await getAllProducts(false);
-        let data = [...response.data.data];
-        if (!data.length)
-          await this.initProducts.forEach((product) => {
-            this.saveProduct(product);
-          });
-      }
-    },
     async saveProduct(event) {
       let product = {
         name: event.name,
