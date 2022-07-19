@@ -4,20 +4,8 @@
     justify-content: space-between;
     align-items: center;
 
-    .table-header-left {
-      display: flex;
-      flex-direction: row;
-      align-items: center;
-      gap: 1rem;
-
-      h3:focus-visible {
-        outline: 2px solid #f2af00;
-      }
-
-      .p-button:focus-visible {
-        outline: 2px solid #f2af00;
-        box-shadow: none;
-      }
+    h3:focus-visible {
+      outline: 2px solid #f2af00;
     }
 
     .p-inputtext:focus-visible {

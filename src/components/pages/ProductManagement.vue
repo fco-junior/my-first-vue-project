@@ -162,7 +162,7 @@ export default {
     async requestDeleteProduct(product) {
       try {
         await deleteProduct(product.id);
-        this.requestGetAllProducts(this.isActive);
+        this.requestGetAllProducts();
         this.notification('success', `${product.name} deleted!`);
       } catch (error) {
         this.notification('error', `${error.response.data.errors}`);
@@ -171,7 +171,7 @@ export default {
     async requestPutProduct(id, product) {
       try {
         await putProduct(id, product);
-        this.requestGetAllProducts(this.isActive);
+        this.requestGetAllProducts();
         this.notification('info', `${product.name} updated!`);
       } catch (error) {
         this.notification('error', `${error.response.data.errors}`);
@@ -180,7 +180,7 @@ export default {
     async requestPatchInactiveProductById(product) {
       try {
         await pathInactiveProductById(product.id);
-        this.requestGetAllProducts(this.isActive);
+        this.requestGetAllProducts();
         this.notification('info', `${product.name} inactivated!`);
       } catch (error) {
         this.notification('error', `${error.response.data.errors}`);
@@ -189,7 +189,7 @@ export default {
     async requestPatchActiveProductById(product) {
       try {
         await pathActiveProductById(product.id);
-        this.requestGetAllProducts(this.isActive);
+        this.requestGetAllProducts();
         this.notification('info', `${product.name} activated!`);
       } catch (error) {
         this.notification('error', `${error.response.data.errors}`);
@@ -197,7 +197,7 @@ export default {
     },
     changeProductsActiveInactive(option) {
       this.isActive = option;
-      this.requestGetAllProducts(option);
+      this.requestGetAllProducts();
     },
     clearFieldsProduct() {
       this.$store.state.product = {};

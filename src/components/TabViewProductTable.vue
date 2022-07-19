@@ -1,5 +1,5 @@
 <template>
-  <TabView class="tabview-custom">
+  <TabView class="tabview-custom" @tab-change="tabChange">
     <TabPanel>
       <template #header>
         <i class="pi pi-eye" />
@@ -19,5 +19,11 @@
 <script>
 export default {
   name: 'TabViewProductTable',
+  methods: {
+    tabChange(event) {
+      let isActive = event.index ? false : true;
+      this.$emit('change', isActive);
+    }
+  }
 };
 </script>

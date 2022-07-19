@@ -1,20 +1,6 @@
 <template>
   <div class="product-table">
-    <TabView class="tabview-custom">
-      <TabPanel>
-        <template #header>
-          <i class="pi pi-eye" />
-          <span>Actives products</span>
-        </template>
-      </TabPanel>
-
-      <TabPanel>
-        <template #header>
-          <i class="pi pi-eye-slash" />
-          <span>Inactives products</span>
-        </template>
-      </TabPanel>
-    </TabView>
+    <TabViewProductTable @change="changeProductsActiveInactive" />
 
     <DataTable
       :value="products"
@@ -30,24 +16,7 @@
       </template>
 
       <template #header>
-        <div class="table-header-left">
-          <h3 tabindex="0">Product Management</h3>
-          <Button
-            v-if="isActive"
-            class="p-button-rounded p-button-raised p-button-secondary p-button-sm"
-            label="View Inactives"
-            @click="changeProductsActiveInactive(false)"
-          />
-
-          <Button
-            v-else
-            class="p-button-rounded p-button-raised p-button-secondary p-button-sm"
-            style="width: 7.5rem"
-            label="View Actives"
-            @click="changeProductsActiveInactive(true)"
-          />
-        </div>
-
+        <h3 tabindex="0">Product Management</h3>
         <div class="p-float-label">
           <InputText
             id="search-by-id"
@@ -153,14 +122,9 @@
         </template>
       </Column>
 
-      <Column class="actions" style="min-width: 20% ">
+      <Column class="actions" style="min-width: 20%">
         <template #header>
-          <span
-            tabindex="0"
-            aria-label="Actions Column Header"
-          >
-            Actions
-          </span>
+          <span tabindex="0" aria-label="Actions Column Header"> Actions </span>
         </template>
 
         <template #body="{ data }">
@@ -199,9 +163,11 @@
 
 <script>
 import { FilterMatchMode, FilterOperator } from 'primevue/api';
+import TabViewProductTable from './TabViewProductTable.vue';
 
 export default {
   name: 'ProductTable',
+  components: { TabViewProductTable },
   data() {
     return {
       isActive: true,
