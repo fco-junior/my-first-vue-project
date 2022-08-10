@@ -1,32 +1,67 @@
 .product-table {
-  .header-table {
+  .p-datatable-header {
     display: flex;
-    flex-direction: row;
+    justify-content: space-between;
     align-items: center;
-    gap: 1rem;
 
-    .dropdown {
-      height: fit-content;
+    h3:focus-visible {
+      outline: 2px solid #f2af00;
+    }
+
+    .p-inputtext:focus-visible {
+      outline: 2px solid #f2af00;
+      box-shadow: none;
+      border: none;
     }
   }
 
-  .header-table-search {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    gap: 0.2rem;
+  .p-sortable-column:focus-visible {
+    box-shadow: inset 0 0 0 2px #f2af00;
   }
 
-  .button {
-    color: #495057;
+  .p-column-filter-menu-button:focus-visible {
+    outline: 2px solid #f2af00;
+    box-shadow: none;
   }
 
-  .action-button {
+  .actions {
     display: flex;
     justify-content: center;
+    gap: 0.5rem;
+
+    &:focus-visible {
+      outline: 2px solid #f2af00;
+    }
   }
 
   .link {
     text-decoration: none;
+  }
+
+  span:focus-visible {
+    outline: 2px solid #f2af00;
+  }
+
+  p:focus-visible {
+    outline: 2px solid #f2af00;
+  }
+
+  .p-button:focus-visible {
+    outline: 2px solid #f2af00;
+
+    &:focus {
+      box-shadow: none;
+      border: none;
+    }
+  }
+
+  .p-tabview-panels {
+    padding: 0;
+  }
+
+  .tabview-custom {
+    span {
+      margin: 0 0.5rem;
+    }
   }
 }
